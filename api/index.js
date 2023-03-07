@@ -2,12 +2,20 @@ import express from 'express'
 import dotenv from 'dotenv'
 import userRouter from './routers/users.js'
 import authRouter from './routers/auth.js'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+
+
+
+
 const { PORT } = dotenv.config().parsed
 const app = express();
-
 //middle ware
 app.use(express.json())
-
+app.use(cors({
+  origin: 'http://localhost:3000',
+}))
+app.use(cookieParser())
 
 app.use("/api/users", userRouter)
 app.use("/api/auth", authRouter)
