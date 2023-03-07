@@ -1,0 +1,17 @@
+{
+  "editor.semanticTokenColorCustomizations": {},
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "regex": "TODO",
+      "color": "yellow"
+    },
+    "FIXME": {
+      "regex": "FIXME",
+      "color": "red"
+    },
+    "XXX": {
+      "regex": "XXX",
+      "color": "magenta"
+    }
+  }
+}

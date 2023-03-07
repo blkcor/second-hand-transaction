@@ -32,6 +32,7 @@ export const getDetail = (req, res) => {
   })
 }
 
+//piblish
 export const publishCommodity = (req, res) => {
   const token = req.cookies.acceptToken
   if (!token) return res.status(401).json('Not logged in!')
@@ -48,6 +49,7 @@ export const publishCommodity = (req, res) => {
   })
 }
 
+//delete
 export const deleteCommodity = (req, res) => {
   const id = req.params.id
   const token = req.cookies.acceptToken
@@ -61,6 +63,8 @@ export const deleteCommodity = (req, res) => {
     })
   })
 }
+
+
 const getCommoditiesByType = (type, pageSize, offset, res) => {
   const q = 'SELECT * FROM commodities WHERE type = ? LIMIT ? OFFSET ?';
   db.query(q, [type, pageSize, offset], (err, result) => {
