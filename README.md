@@ -8,11 +8,11 @@ yarn install
 ppnm install
 ```
 - 运行项目
- - api为服务器端
+ > api为服务器端
  ```bash
   npm run start
  ```
- - client为客户端
+ > client为客户端
 ```bash
 npm run start
 ```
