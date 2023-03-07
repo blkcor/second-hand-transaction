@@ -48,7 +48,19 @@ export const publishCommodity = (req, res) => {
   })
 }
 
-
+export const deleteCommodity = (req, res) => {
+  const id = req.params.id
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json('Invalid token!')
+    const q = "DELETE FROM commodities WHERE id = ?"
+    db.query(q, [id], (err, result) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json({ message: "Commodity deleted" })
+    })
+  })
+}
 const getCommoditiesByType = (type, pageSize, offset, res) => {
   const q = 'SELECT * FROM commodities WHERE type = ? LIMIT ? OFFSET ?';
   db.query(q, [type, pageSize, offset], (err, result) => {
@@ -64,3 +76,5 @@ const getAllCommodities = (pageSize, offset, res) => {
     return res.status(200).json(result)
   })
 }
+
+

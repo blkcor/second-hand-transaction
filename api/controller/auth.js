@@ -2,7 +2,6 @@ import { db } from '../config/db.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
-//register
 export const register = (req, res) => {
   const q = 'SELECT * FROM users WHERE username = ?'
   db.query(q, [req.body.username], (err, result) => {
@@ -21,9 +20,8 @@ export const register = (req, res) => {
   })
 }
 
-//login
+
 export const login = (req, res) => {
-  //TODO:login
   const q = 'SELECT * FROM users WHERE username = ?'
   db.query(q, [req.body.username], (err, result) => {
     if (err) return res.status(500).json({ error: err })
@@ -42,7 +40,6 @@ export const login = (req, res) => {
 
 //logout
 export const logout = (req, res) => {
-  //TODO:logout 
   res.clearCookie('acceptToken').status(200).json({ message: 'User logged out' })
   //TODO: redirect to login page from the client side
 }
