@@ -22,6 +22,7 @@ export const register = (req, res) => {
 
 
 export const login = (req, res) => {
+  console.log('login')
   const q = 'SELECT * FROM users WHERE username = ?'
   db.query(q, [req.body.username], (err, result) => {
     if (err) return res.status(500).json({ error: err })
