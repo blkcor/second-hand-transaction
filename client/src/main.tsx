@@ -5,13 +5,15 @@ import './index.css'
 import 'uno.css'
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from 'react-router-dom'
-
+import { RecoilRoot } from 'recoil'
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ChakraProvider>
+    <RecoilRoot>
+      <ChakraProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ChakraProvider>
+    </RecoilRoot>
   </React.StrictMode>,
 )

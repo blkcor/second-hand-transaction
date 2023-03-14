@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
+import { useRecoilState } from 'recoil'
+import userAtom from '../atoms/authAtom';
 import {
-  Button,
   Input,
+  Button,
   FormControl,
   FormLabel,
   FormHelperText,
@@ -10,6 +12,10 @@ import {
   Image,
   Checkbox,
   Link as ChakraLink,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react';
 import request from '../axios';
 
@@ -18,7 +24,9 @@ const Login: React.FC = () => {
     username: '',
     password: ''
   })
-  const [formValid, setFormValie] = useState(true)
+  const [message, setMessage] = useState('');
+  const [formValid, setFormValid] = useState(true)
+  const [userState, setUserState] = useRecoilState(userAtom)
   const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,15 +36,34 @@ const Login: React.FC = () => {
     })
   }
   const handleSubmit = () => {
-    setFormValie(form.username !== '' && form.password !== '')
-    if (!formValid) {
+    if (!form.username || !form.password) {
+      setFormValid(false)
+      setMessage(`username or password can't be null`)
       return
     }
-    navigate('/')
-
-    // request.post('/auth/login', form).then(res => {
-    //   console.log(res)
-    // })
+    request.post('/auth/login', form).then(res => {
+      //login successfully and we can set the user in the context
+      const { id, username } = res.data
+      setUserState({
+        id,
+        username
+      })
+      //keep userInfo in localStorage
+      localStorage.setItem('currentUser', JSON.stringify({
+        id,
+        username
+      }))
+      navigate('/')
+    }).catch(err => {
+      setFormValid(false)
+      setMessage(err.response.data.error)
+      return
+    })
+  }
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSubmit()
+    }
   }
   return (
     <div
@@ -51,7 +78,7 @@ const Login: React.FC = () => {
         height={[800, 800, 600]}
         margin='0 auto'
         border='1px solid black'
-        boxSizing='border-box'
+        boxSizing='content-box'
         justifyContent='space-between'
         boxShadow="0  2px 4px #949494"
         overflow='hidden'
@@ -77,8 +104,7 @@ const Login: React.FC = () => {
             >
               <Image src='/flash.svg' width={30} height={10} />
             </div>
-            <FormControl display='flex' alignItems='center' flexDirection='column' padding='10px' justifyContent='center'>
-
+            <FormControl display='flex' alignItems='center' flexDirection='column' padding='10px' justifyContent='center' onKeyDown={handleKeyDown}>
               <FormLabel
                 fontSize={[20, 30, 37]}
                 fontFamily='sans-serif'
@@ -89,13 +115,17 @@ const Login: React.FC = () => {
               <div w-full text-center >
                 <Button mb-4 w-80 text-center ><img w-5 h-5 block mr-2 src='/google.svg' />Sign with google</Button>
               </div>
-              <Input name='username' type='text' mb-10 mt-2 width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your username or email or phone number' onChange={handleChange} />
-              <Input name='password' type='password' width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your password' onChange={handleChange} />
+              <Input autoComplete='off' name='username' type='text' mb-10 mt-2 width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your username or email or phone number' onChange={handleChange} />
+              <Input autoComplete='off  ' name='password' type='password' width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your password' onChange={handleChange} />
               {
                 !formValid &&
-                <p mt-2 text-red font-bold>username or password can't be null</p>
+                <Alert status='error' mt={4} maxWidth={400} borderRadius={3}>
+                  <AlertIcon />
+                  <AlertTitle>Wrong</AlertTitle>
+                  <AlertDescription>{message}</AlertDescription>
+                </Alert>
               }
-              <Flex w-full mt-3 justifyContent='space-between' padding='20px' >
+              <Flex w-full mt={-2} justifyContent='space-between' padding='20px' >
                 <Checkbox flex='1' _hover={{
                   cursor: 'pointer',
                   color: "#349494",
@@ -115,7 +145,7 @@ const Login: React.FC = () => {
               >
                 <Button w-80 bg='#4d39e4' _hover={{
                   backgroundColor: 'rgba(248, 113, 113, 1)',
-                }} onClick={handleSubmit}>login</Button>
+                }} onClick={handleSubmit} >login</Button>
               </div>
               <FormHelperText w-full text-center>
                 Don't have an account? &nbsp;&nbsp;

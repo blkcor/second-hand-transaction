@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useRef, useState } from 'react';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import {
   Button,
   Input,
@@ -8,7 +8,14 @@ import {
   FormHelperText,
   Flex,
   Image,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from '@chakra-ui/react';
+import request from '../axios';
 
 type RegisterProps = {};
 
@@ -17,18 +24,13 @@ const Register: React.FC<RegisterProps> = () => {
     username: '',
     email: '',
     password: '',
-    repeatedPassword: '',
+    phone: '',
   });
-  const [formValid, setFormValie] = useState(true);
-
-  const username = useMemo(() => {
-    return form.username;
-  }, [form.username]);
-
-  const password = useMemo(() => {
-    return form.password;
-  }, [form.password]);
-
+  const [formValid, setFormValid] = useState(true);
+  const [message, setMesage] = useState('');
+  const cancelRef = useRef(null)
+  const [registerState, setRegisterState] = useState(false)
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
@@ -37,15 +39,18 @@ const Register: React.FC<RegisterProps> = () => {
   };
 
   const handleSubmit = () => {
-    setFormValie(form.username !== '' && form.password !== '');
-
-    if (!formValid) {
-      return;
+    if (!form.username || !form.password || !form.email || !form.phone) {
+      setFormValid(false)
+      setMesage('please complete your information')
+      return
     }
+    request.post('/auth/register', form).then(res => {
+      setRegisterState(true)
+      setTimeout(() => { navigate('/login') }, 3000)
+    }).catch(err => {
+      setMesage(err.response.data.message)
+    })
 
-    // request.post('/auth/login', form).then(res => {
-    //   console.log(res)
-    // })
   };
 
   return (
@@ -58,6 +63,27 @@ const Register: React.FC<RegisterProps> = () => {
       justify-center
       items-center
     >
+      {registerState &&
+        <AlertDialog
+          isOpen={formValid}
+          leastDestructiveRef={cancelRef}
+          onClose={() => setFormValid(false)}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize='20px' fontWeight='bold' textAlign={'center'} >
+                Registration message
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                <p text-green-500 font-700 text-center>register successfully!</p>
+                <p text-center mt-5 mb-3>You will be redirect to login page soon</p>
+              </AlertDialogBody>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
+      }
       <Flex
         flexDirection={['column', 'column', 'row']}
         width={[500, 800, 1200]}
@@ -162,20 +188,13 @@ const Register: React.FC<RegisterProps> = () => {
             />
 
             <Input
-              name="repeatedPassword"
-              type="password"
+              name="phone"
+              type="text"
               width={['100%', '100%', 500]}
               borderColor="#949494"
-              placeholder="please repeat your password"
+              placeholder="please enter your phone number"
               onChange={handleChange}
             />
-
-            {!formValid && (
-              <p mt-2 text-red font-bold>
-                username or password can't be null
-              </p>
-            )}
-
             <div w-full text-center mt-4 mb-3>
               <Button
                 w-80
@@ -185,7 +204,7 @@ const Register: React.FC<RegisterProps> = () => {
                 }}
                 onClick={handleSubmit}
               >
-                login
+                register
               </Button>
             </div>
 
@@ -198,7 +217,7 @@ const Register: React.FC<RegisterProps> = () => {
           </FormControl>
         </Flex>
       </Flex>
-    </div>
+    </div >
   );
 };
 

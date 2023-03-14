@@ -22,18 +22,16 @@ export const register = (req, res) => {
 
 
 export const login = (req, res) => {
-  console.log('login')
   const q = 'SELECT * FROM users WHERE username = ?'
   db.query(q, [req.body.username], (err, result) => {
     if (err) return res.status(500).json({ error: err })
     if (result.length === 0) return res.status(401).json({ error: 'User not found' })
     //check the password
+
     const checkPassword = bcrypt.compareSync(req.body.password, result[0].password)
     if (!checkPassword) return res.status(400).json({ error: 'Wrong password or username' })
     const token = jwt.sign({ id: result[0].id }, 'CHY')
-
     const { password, ...other } = result[0]
-
     res.cookie('acceptToken', token,
       { httpOnly: true }).status(200).json(other)
   })
