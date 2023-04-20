@@ -1,49 +1,76 @@
-import { Flex, Switch, Input, Image, Link } from '@chakra-ui/react';
-import React from 'react';
+import { Flex, Switch, Input, Image, Link, border } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import DarkTaggle from './DarkTaggle';
 
-type HeaderProps = {
-
-};
-
+type HeaderProps = {};
+type SearchInputState = "focus" | "blur"
 const Header: React.FC<HeaderProps> = () => {
+  const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
+  const searchInputStyle = useMemo(() => {
+    if (searchInputState === "focus") {
+      return "border-2"
+    }
+  }, [searchInputState])
+
 
   return (
-    <Flex flexDirection='row' mt='16px' mx='20px' gap='5' pt-2 maxWidth={'83%'} w-full >
-      <div flex flex-row gap-1 justify-center items-center>
-        <Image src='/logo.svg' h-8 w-8 />
-        <p font-800 text-5>send-hand</p>
-      </div>
-      <div className='toggle' flex-1 flex flex-row gap-1 justify-center items-center>
-        <Image src='/sun.svg' h-8 w-8 />
-        <Switch />
-        <Image src='/moon.svg' h-8 w-8 />
-      </div>
-      <div h-10 border-1 display-flex flex-row items-center p-2 box-border w-150 >
-        <Image src='/search.svg' h-8 w-8 />
-        <Input type='text' h='30px' w-100 border='none' outline='none' _focus={{ border: 'none' }} _hover={{ border: 'none' }} />
-      </div>
-      <div flex-1
-        flex flex-row gap-1 >
-        <Image flex-1 src='/shop-card.svg' h-8 w-8 />
-        <Image flex-1 src='/home.svg' h-8 w-9 />
-      </div>
-      <Link
-        _hover={{ textDecoration: 'none' }}
-        display-flex
-        justify-center
+    <>
+      <Flex
+        h-15
+        bg-black
+        color-white
         items-center
-        flex-row
-        gap-1
-        w-20
-        flex-1
-        position={'relative'}
-        left={'-20px'}
-        bottom={'3px'}
+        gap-10
+        box-border
+
       >
-        <Image src='/default.svg' h-9 w-9 />
-        <p text-blue-500 hover:text-red >blkcor</p>
-      </Link>
-    </Flex>
+        <div className='logo'
+          h-full
+          flex
+          items-center
+          justify-center
+          pb-1
+          pl-10
+        >
+          <Image src='/logo.svg' w-75 />
+        </div>
+        <div className={`search ${searchInputStyle}`}
+          flex
+          flex-row
+          border-1
+          rounded-2
+          box-border
+          p-1
+          h='70%'
+          w-180
+        >
+          <Image src='/search.svg' w-10 />
+          <Input
+            variant='unstyled'
+            onFocus={() => setSearchInputState("focus")}
+            onBlur={() => setSearchInputState("blur")}
+          />
+        </div>
+        <Flex
+          flex-1
+          justify-end
+          items-center
+          gap-4
+          pr-8
+        >
+          <div className='order'>
+            <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
+          </div>
+          <div className='shopping'>
+            <Image src='/shopping.svg' h-10 _hover={{ cursor: "pointer" }} />
+          </div>
+          <div className='user'>
+            <Image src='/user.svg' h-10 _hover={{ cursor: "pointer" }} />
+          </div>
+        </Flex>
+      </Flex>
+    </>
   )
-}
+};
+
 export default Header;

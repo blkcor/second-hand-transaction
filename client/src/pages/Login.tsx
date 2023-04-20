@@ -71,6 +71,9 @@ const Login: React.FC = () => {
       w-screen
       h-screen
       p-20
+      flex
+      justify-center
+      items-center
     >
       <Flex
         flexDirection={['column', 'column', 'row']}
@@ -86,11 +89,16 @@ const Login: React.FC = () => {
       >
         <Flex
           flex={1}
+          order={[1, 1, 2]}
           width={['100%', '100%', '50%']}
           height={[300, 300, 600]}
           borderRight='1px solid #000'
           bg='white'
           boxSizing='border-box'
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          padding={['20px', '50px', '50px']}
         >
           <Flex
             w-full
@@ -115,8 +123,8 @@ const Login: React.FC = () => {
               <div w-full text-center >
                 <Button mb-4 w-80 text-center ><img w-5 h-5 block mr-2 src='/google.svg' />Sign with google</Button>
               </div>
-              <Input autoComplete='off' name='username' type='text' mb-10 mt-2 width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your username or email or phone number' onChange={handleChange} />
-              <Input autoComplete='off  ' name='password' type='password' width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your password' onChange={handleChange} />
+              <Input name='username' type='text' mb-10 mt-2 width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your username or email or phone number' onChange={handleChange} />
+              <Input name='password' type='password' width={['100%', '100%', 500]} borderColor='#949494' placeholder='please input your password' onChange={handleChange} />
               {
                 !formValid &&
                 <Alert status='error' mt={4} maxWidth={400} borderRadius={3}>

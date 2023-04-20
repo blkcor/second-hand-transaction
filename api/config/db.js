@@ -13,7 +13,7 @@ export const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) {
-    log(mistake(err))
+    log(mistake(`[mysql] ${err}`,))
     return
   }
   log(success('[server]: successfully connect to the database'))

@@ -15,7 +15,6 @@ export const updateUser = (req, res) => {
   const token = req.cookies.acceptToken
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
-    console.log("@@@@@@", userInfo)
     if (err) return res.status(403).json("Token is not valid!");
     const q = "UPDATE users SET `username`=?, `email`=?, `phone`=?, `avatar`=? WHERE id=?";
     const { username, email, phone, avator } = req.body;
@@ -24,7 +23,7 @@ export const updateUser = (req, res) => {
       if (err) return res.status(500).json(err);
       if (result.affectedRows > 0) return res.status(200).json({ message: "User updated" });
       localStorage.setItem('user', result)
-      return res.status(403).json("You can only update the info yourself")
+      return res.status(403).json("You can only update the information yourself")
     })
   })
 
