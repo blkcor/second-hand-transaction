@@ -16,6 +16,14 @@ export default defineConfig({
     presetAttributify(),
     presetIcons({
       extraProperties: { 'display': 'inline-block', 'vertical-align': 'middle' },
+      collections: {
+        carbon: () =>
+          import('@iconify-json/carbon').then((i) => i.icons as any),
+        maki: () =>
+          import('@iconify-json/maki').then((i) => i.icons as any),
+        mdi: () =>
+          import('@iconify-json/mdi').then((i) => i.icons as any)
+      }
     }),
     presetTypography(),
   ],

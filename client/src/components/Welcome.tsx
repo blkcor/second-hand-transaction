@@ -1,20 +1,54 @@
 import React, { useState } from 'react';
 import Category from './Category';
 
+import { Flex } from '@chakra-ui/react';
+import RotatingImage from './RotatingImage';
+
 
 type WelcomeProps = {
 
 };
 
-
+const images = [
+  "/sliding/bg.jpeg",
+  "/sliding/bg2.jpeg",
+  "/sliding/bg3.jpeg",
+  "/sliding/bg4.jpeg",
+]
 
 const Welcome: React.FC<WelcomeProps> = () => {
 
+  const [currentIndex, setCurrentIndex] = useState(0);
 
+  const handleChangeIndex = (index: number) => {
+    setCurrentIndex(index);
+  };
 
   return (
     <>
-      <Category />
+      <Flex
+        bg-white
+        justify-center
+        className='main'
+        w={'100%'}
+        pt-5
+
+      >
+        <Flex className='welcome'
+          border-2
+          border-gray-100
+          bg-gray-200
+          rounded-5
+          h-70vh
+        >
+          <Category />
+          <RotatingImage
+            images={images}
+            currentIndex={currentIndex}
+            onChangeIndex={handleChangeIndex}
+          />
+        </Flex>
+      </Flex>
     </>
   )
 }
