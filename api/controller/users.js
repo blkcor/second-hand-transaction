@@ -1,7 +1,7 @@
 import '../config/db.js'
 import { db } from '../config/db.js'
 import jwt from 'jsonwebtoken'
-
+import moment from 'moment'
 export const getUser = (req, res) => {
   const q = "SELECT * FROM users WHERE id = ?"
   db.query(q, [req.params.userId], (err, result) => {
@@ -16,9 +16,10 @@ export const updateUser = (req, res) => {
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
-    const q = "UPDATE users SET `username`=?, `email`=?, `phone`=?, `avatar`=? WHERE id=?";
-    const { username, email, phone, avator } = req.body;
-    const params = [username, email, phone, avator, userInfo.id];
+    const q = "UPDATE users SET `username`=?, `email`=?, `phone`=?, `gender`=?,`avatar`=?, `birthday`=?,`location`=?,`introduction`=?,`update_time`=? WHERE id=?";
+    const { username, email, phone, gender, avatar, birthday, location, introduction } = req.body;
+    const params = [username, email, phone, gender, avatar, moment(birthday).format('YYYY-MM-DD'), location, introduction, moment(new Date()).format("YYYY-MM-DD HH:mm:ss"), userInfo.id];
+    console.log(params)
     db.query(q, [...params], (err, result) => {
       if (err) return res.status(500).json(err);
       if (result.affectedRows > 0) return res.status(200).json({ message: "User updated" });

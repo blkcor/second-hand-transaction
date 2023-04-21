@@ -7,12 +7,24 @@ import collectionRouter from './routers/collections.js'
 
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-
+import multer from 'multer'
 
 
 
 const { PORT } = dotenv.config().parsed
 const app = express();
+
+//storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../client/public/upload')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname)
+  }
+})
+
+const upload = multer({ storage: storage })
 //middle ware
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', true)
@@ -30,6 +42,10 @@ app.use("/api/users", userRouter)
 app.use("/api/auth", authRouter)
 app.use('/api/commodities', commodityRouter)
 app.use('/api/collections', collectionRouter)
+app.use('/api/upload', upload.single('file'), (req, res) => {
+  const file = req.file
+  res.status(200).json(file.filename)
+})
 
 //start
 app.listen(PORT, () => {

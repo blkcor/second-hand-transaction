@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Flex, List, ListIcon, ListItem, Button } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import Welcome from '../components/Welcome';
-const Home: React.FC = () => {
 
+const Home: React.FC = () => {
   return (
     <div>
       <Header />

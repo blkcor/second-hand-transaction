@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   })
   const [message, setMessage] = useState('');
   const [formValid, setFormValid] = useState(true)
-  const [userState, setUserState] = useRecoilState(userAtom)
+  const [_, setUserState] = useRecoilState(userAtom)
   const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

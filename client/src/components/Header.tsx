@@ -1,9 +1,15 @@
-import { Flex, Switch, Input, Image, Link, border } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import DarkTaggle from './DarkTaggle';
+import { Flex, Input, Image, Link, } from '@chakra-ui/react';
+import React, { useMemo, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import userAtom from '../atoms/authAtom';
+import { User } from '../types/User';
 
-type HeaderProps = {};
+
+type HeaderProps = {
+
+};
 type SearchInputState = "focus" | "blur"
+
 const Header: React.FC<HeaderProps> = () => {
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
   const searchInputStyle = useMemo(() => {
@@ -11,9 +17,12 @@ const Header: React.FC<HeaderProps> = () => {
       return "border-2"
     }
   }, [searchInputState])
-
-
+  const userState = useRecoilValue(userAtom)
+  const currentUser = useMemo(() => {
+    return userState
+  }, [userState])
   return (
+
     <>
       <Flex
         h-15
@@ -32,7 +41,9 @@ const Header: React.FC<HeaderProps> = () => {
           pb-1
           pl-10
         >
-          <Image src='/logo.svg' w-75 />
+          <Link href='/'>
+            <Image src='/logo.svg' w-75 />
+          </Link>
         </div>
         <div className={`search ${searchInputStyle}`}
           flex
@@ -57,6 +68,7 @@ const Header: React.FC<HeaderProps> = () => {
           items-center
           gap-4
           pr-8
+
         >
           <div className='order'>
             <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
@@ -67,6 +79,9 @@ const Header: React.FC<HeaderProps> = () => {
           <div className='user'>
             <Image src='/user.svg' h-10 _hover={{ cursor: "pointer" }} />
           </div>
+          <div ml--10px hover-text-red hover-cursor-pointer>{currentUser.username}</div>
+
+
         </Flex>
       </Flex>
     </>
