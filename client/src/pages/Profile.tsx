@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Flex, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Flex, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import request from '../axios';
@@ -141,12 +141,24 @@ const Profile: React.FC<ProfileProps> = () => {
 
   const confirmRef = useRef(null)
   return (
-    <>
+    <Box
+      h-full
+      bgImage={"/background.jpeg"}
+    >
       <Header />
       <Flex
-        width="100%"
+        className='info-card'
         justifyContent="center"
-        mb-20
+        w-200
+        p-10
+        my-20
+        mx-auto
+        rounded-10
+        h-full
+        border={"1px solid #5E5D6A"}
+        backdropFilter="blur(100px)"
+        bgGradient="linear(to-r, #DAE2F8, #D6A4A4)"
+        boxShadow="0 0 6px 2px #D6A4A4"
       >
         <AlertDialog
           isOpen={saveStatus}
@@ -169,11 +181,11 @@ const Profile: React.FC<ProfileProps> = () => {
                   setTimeout(() => window.location.reload(), 100)
                 }}>
                   Confirm
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
+                </Button >
+              </AlertDialogFooter >
+            </AlertDialogContent >
+          </AlertDialogOverlay >
+        </AlertDialog >
         <Flex
           mt-10
           alignItems="center"
@@ -239,7 +251,7 @@ const Profile: React.FC<ProfileProps> = () => {
         </Flex>
       </Flex >
       <Footer />
-    </>
+    </Box>
   )
 }
 export default Profile;

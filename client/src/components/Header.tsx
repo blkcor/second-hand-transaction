@@ -1,8 +1,10 @@
-import { Flex, Input, Image, Link, } from '@chakra-ui/react';
+import { Flex, Input, Image, Menu, MenuButton, Button, MenuList, MenuItem } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import { User } from '../types/User';
+import { Link } from 'react-router-dom';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 
 type HeaderProps = {
@@ -16,6 +18,7 @@ const Header: React.FC<HeaderProps> = () => {
     if (searchInputState === "focus") {
       return "border-2"
     }
+
   }, [searchInputState])
   const userState = useRecoilValue(userAtom)
   const currentUser = useMemo(() => {
@@ -41,7 +44,7 @@ const Header: React.FC<HeaderProps> = () => {
           pb-1
           pl-10
         >
-          <Link href='/'>
+          <Link to={"/"}>
             <Image src='/logo.svg' w-75 />
           </Link>
         </div>
@@ -76,10 +79,21 @@ const Header: React.FC<HeaderProps> = () => {
           <div className='shopping'>
             <Image src='/shopping.svg' h-10 _hover={{ cursor: "pointer" }} />
           </div>
-          <div className='user'>
-            <Image src='/user.svg' h-10 _hover={{ cursor: "pointer" }} />
-          </div>
-          <div ml--10px hover-text-red hover-cursor-pointer>{currentUser.username}</div>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}   >
+              <div className='user'>
+                <Image src='/user.svg' h-10 />
+              </div>
+              <div ml--10px hover-text-red hover-cursor-pointer>{currentUser.username}</div>
+            </MenuButton>
+            <MenuList>
+              <MenuItem>Download</MenuItem>
+              <MenuItem>Create a Copy</MenuItem>
+              <MenuItem>Mark as Draft</MenuItem>
+              <MenuItem>Delete</MenuItem>
+              <MenuItem>Attend a Workshop</MenuItem>
+            </MenuList>
+          </Menu>
 
 
         </Flex>
