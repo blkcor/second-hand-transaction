@@ -3,18 +3,17 @@ import React from 'react';
 
 type CategoryItemProps = {
   cover: string,
-  title: string,
+  name: string,
   publishTime: string,
   price: number,
-  seller: string
 };
 
-const CategoryItem: React.FC<CategoryItemProps> = ({ cover, title, price, publishTime, seller }) => {
+const CategoryItem: React.FC<CategoryItemProps> = ({ cover, name, price, publishTime }) => {
 
   return (
     <GridItem
       w='100%'
-      bg-blue-200
+      bg-white
       boxSizing='border-box'
       rounded-2
       p-1
@@ -26,7 +25,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ cover, title, price, publis
     >
       <Image src={cover} rounded-2 objectFit={'cover'} />
       <Center>
-        <span fw-600>{title}</span>
+        <span fw-600>{name}</span>
       </Center>
       <Box px-2>
         <span fw-700>到手价：
@@ -35,9 +34,6 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ cover, title, price, publis
       </Box>
       <Box px-2>
         <span fw-700>发布日期：{publishTime}</span>
-      </Box>
-      <Box px-2>
-        <span fw-700>卖家：{seller}</span>
       </Box>
     </GridItem>
   )

@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import userRouter from './routers/users.js'
 import authRouter from './routers/auth.js'
-import commodityRouter from './routers/commodities.js'
+import productRouter from './routers/products.js'
 import collectionRouter from './routers/collections.js'
 
 import cookieParser from 'cookie-parser'
@@ -40,8 +40,9 @@ app.use(cookieParser())
 //routers
 app.use("/api/users", userRouter)
 app.use("/api/auth", authRouter)
-app.use('/api/commodities', commodityRouter)
+app.use('/api/products', productRouter)
 app.use('/api/collections', collectionRouter)
+//single file upload
 app.use('/api/upload', upload.single('file'), (req, res) => {
   const file = req.file
   res.status(200).json(file.filename)

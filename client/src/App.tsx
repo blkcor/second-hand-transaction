@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil"
 import userAtom from "./atoms/authAtom"
 import Profile from "./pages/Profile"
 import CategoryDetail from "./components/CategoryDetail"
+import ProductDetail from "./components/ProductDetail"
 
 function App() {
   const navigate = useNavigate()
@@ -30,6 +31,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/category/:category" element={<CategoryDetail />} />
+      <Route path="/product/:productId" element={<ProductDetail />} />
     </Routes>
   )
 }
