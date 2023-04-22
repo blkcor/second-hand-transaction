@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import { useRecoilState } from "recoil"
 import userAtom from "./atoms/authAtom"
 import Profile from "./pages/Profile"
+import CategoryDetail from "./components/CategoryDetail"
 
 function App() {
   const navigate = useNavigate()
@@ -28,6 +29,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/category/:category" element={<CategoryDetail />} />
     </Routes>
   )
 }

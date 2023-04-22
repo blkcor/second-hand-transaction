@@ -6,7 +6,7 @@ import RotatingImage from './RotatingImage';
 
 
 type WelcomeProps = {
-
+  activeItem: string
 };
 
 const images = [
@@ -16,7 +16,7 @@ const images = [
   "/sliding/bg4.jpeg",
 ]
 
-const Welcome: React.FC<WelcomeProps> = () => {
+const Welcome: React.FC<WelcomeProps> = ({ activeItem }) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -41,7 +41,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
           rounded-5
           h-70vh
         >
-          <Category />
+          <Category activeItem={activeItem} />
           <RotatingImage
             images={images}
             currentIndex={currentIndex}
