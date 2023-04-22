@@ -10,7 +10,6 @@ import {
   Image,
   AlertDialog,
   AlertDialogBody,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,

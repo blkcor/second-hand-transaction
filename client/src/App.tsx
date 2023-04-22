@@ -12,13 +12,16 @@ function App() {
   const user = localStorage.getItem('currentUser')
   const [userState, setUserState] = useRecoilState(userAtom);
   useEffect(() => {
-    if (user === null) navigate('/login')
-  }, [])
-  useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') as string)
-    setUserState(currentUser)
+    if (user === null) {
+      localStorage.setItem("unlogin", "y")
+      navigate('/login')
+    }
+    else {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') as string)
+      setUserState(currentUser)
+    }
+  }, [user])
 
-  }, [])
   return (
     <Routes>
       <Route path="/" element={<Home />} />

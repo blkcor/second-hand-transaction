@@ -2,9 +2,8 @@ import { Flex, Input, Image, Menu, MenuButton, Button, MenuList, MenuItem } from
 import React, { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
-import { User } from '../types/User';
-import { Link } from 'react-router-dom';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../axios';
 
 
 type HeaderProps = {
@@ -13,19 +12,28 @@ type HeaderProps = {
 type SearchInputState = "focus" | "blur"
 
 const Header: React.FC<HeaderProps> = () => {
+  const navigate = useNavigate();
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
   const searchInputStyle = useMemo(() => {
     if (searchInputState === "focus") {
       return "border-2"
     }
-
   }, [searchInputState])
   const userState = useRecoilValue(userAtom)
   const currentUser = useMemo(() => {
     return userState
   }, [userState])
-  return (
 
+  const handleClick = () => {
+    console.log("click")
+  }
+
+  const handleLogout = async () => {
+    await axios.post("/auth/logout")
+    localStorage.removeItem("currentUser")
+    navigate("/login")
+  }
+  return (
     <>
       <Flex
         h-15
@@ -80,18 +88,19 @@ const Header: React.FC<HeaderProps> = () => {
             <Image src='/shopping.svg' h-10 _hover={{ cursor: "pointer" }} />
           </div>
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}   >
-              <div className='user'>
-                <Image src='/user.svg' h-10 />
-              </div>
-              <div ml--10px hover-text-red hover-cursor-pointer>{currentUser.username}</div>
+            <MenuButton _hover={{
+              color: "rgba(248, 113, 113, 1)"
+            }} >
+              <Flex>
+                <div className='user'>
+                  <Image src='/user.svg' h-10 />
+                </div>
+                <div hover-text-red hover-cursor-pointer mt-2>{currentUser?.username}</div>
+              </Flex>
             </MenuButton>
             <MenuList>
-              <MenuItem>Download</MenuItem>
-              <MenuItem>Create a Copy</MenuItem>
-              <MenuItem>Mark as Draft</MenuItem>
-              <MenuItem>Delete</MenuItem>
-              <MenuItem>Attend a Workshop</MenuItem>
+              <Link to={"/profile"} onClick={handleClick}> <MenuItem><span text-black>Profile</span></MenuItem></Link>
+              <MenuItem onClick={handleLogout}><span text-black>Logout</span></MenuItem>
             </MenuList>
           </Menu>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import userAtom from '../atoms/authAtom';
@@ -29,6 +29,11 @@ const Login: React.FC = () => {
   const [_, setUserState] = useRecoilState(userAtom)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    localStorage.getItem('unlogin') === 'y'
+    //TODO:alert dialog with 'please login first'
+  }, [])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
@@ -53,13 +58,18 @@ const Login: React.FC = () => {
         id,
         username
       }))
-      navigate('/')
+      localStorage.removeItem("unlogin")
+      //alert dialog with 'login successfully'
+      setTimeout(() => {
+        navigate('/')
+      }, 1000)
     }).catch(err => {
       setFormValid(false)
       setMessage(err.response.data.error)
       return
     })
   }
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       handleSubmit()

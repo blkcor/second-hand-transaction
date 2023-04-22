@@ -14,6 +14,6 @@ pnpm install
  ```
  > client为客户端🤖
 ```bash
-npm run start
+npm run dev
 ```
 
