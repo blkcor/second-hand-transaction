@@ -8,7 +8,6 @@ export const register = (req, res) => {
     if (err) return res.status(500).json(err)
     if (result.length > 0) return res.status(409).json({ message: 'Username already exists' })
     const q = 'INSERT INTO users(username,password,email,phone) VALUES (?)'
-    console.log(req.body)
     const { username, email, phone, password } = req.body
     //hash the password and save in the database
     const salt = bcrypt.genSaltSync(10)

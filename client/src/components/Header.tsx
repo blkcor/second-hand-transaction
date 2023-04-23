@@ -104,7 +104,7 @@ const Header: React.FC<HeaderProps> = () => {
               </Flex>
             </MenuButton>
             <MenuList>
-              <Link to={"/profile"} onClick={handleClick}> <MenuItem><span text-black>Profile</span></MenuItem></Link>
+              <Link to={"/profile"}> <MenuItem><span text-black>Profile</span></MenuItem></Link>
               <MenuItem onClick={handleLogout}><span text-black>Logout</span></MenuItem>
             </MenuList>
           </Menu>

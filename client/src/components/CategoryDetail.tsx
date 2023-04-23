@@ -7,6 +7,7 @@ import Footer from './Footer';
 import CategoryItem from './CategoryItem';
 import axios from '../axios';
 import { Product } from '../types/Product';
+import moment from 'moment';
 
 type CategoryDetailProps = {
 
@@ -44,7 +45,22 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
       axios
         .get(`/products?categoryId=${categoryId}`)
         .then(res => {
-          setProducts(res.data);
+          //mysql 的格式是真的狗屎
+          setProducts(res.data.map((product: any) => {
+            return {
+              ...product,
+              id: product.id,
+              description: product.description,
+              price: product.price,
+              publishTime: moment(product['publish_time']).format("YYYY-MM-DD"),
+              sellerId: product['seller_id'],
+              categoryId: product['category_id'],
+              cover: product.cover,
+              status: product.status,
+              imageUrls: product['image_urls'],
+              name: product.name,
+            }
+          }))
         })
         .catch(err => {
           console.log(err);
@@ -52,7 +68,6 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
     };
 
     handleRequest()
-
     const productSlices = products?.map(product => {
       const productSlice: ProductSlice = {
         id: product.id,
@@ -90,7 +105,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
         </Heading>
         {
           productSlices && productSlices.length > 0 ?
-            <Grid templateColumns='repeat(5, 2fr)' gap={6} p-10 box-border >
+            <Grid templateColumns='repeat(4, 2fr)' gap={6} p-10 box-border >
               {productSlices?.map(productSlice =>
                 <Link key={productSlice.id} to={`/product/${productSlice.id}/${categoryId}`}>
                   <CategoryItem key={productSlice.id} name={productSlice.name} cover='/sliding/bg.jpeg' price={productSlice.price} publishTime={productSlice.publishTime} />

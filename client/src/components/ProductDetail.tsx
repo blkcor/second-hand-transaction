@@ -13,15 +13,10 @@ import axios from '../axios';
 import moment from 'moment';
 import { User } from '../types/User';
 import { AxiosResponse } from 'axios';
+import { Seller } from '../types/Seller';
 type ProductDetailProps = {
 
 };
-
-type Seller = {
-  id: number,
-  username: string,
-  avatar: string
-}
 
 const ProductDetail: React.FC<ProductDetailProps> = () => {
   const productId = useLocation().pathname.split("/")[2]
@@ -207,9 +202,8 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 mt--6
                 ml="auto">
                 {collected ?
-                  <i i-carbon-star-filled /> :
-                  <i i-carbon-star />
-
+                  <span><i mb-1 mr-1 i-carbon-star-filled /><span text-green-500>已收藏</span></span> :
+                  <span><i mb-1 mr-1 i-carbon-star /><span text-yellow-500>收藏</span></span>
                 }
               </Box>
             </Flex>
@@ -229,11 +223,13 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 分类：<span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(categoryId)] }}>{mapEngTagToChn[productTagMap[Number(categoryId)]]}</span>
               </Link>
             </div>
+            <div mt-4>
+              发布日期:<span fw-700 ml-3 italic text-6>{productInfo?.publishTime}</span>
+            </div>
             <Flex
               className='operation-btn'
               justify-between
-
-              mt-20
+              mt-10
               p-5
               w-20vw
             >
