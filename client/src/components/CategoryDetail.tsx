@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Welcome from './Welcome';
 import Header from './Header';
 import { Link, useLocation } from 'react-router-dom';
@@ -33,22 +33,28 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
         let categoryId = 0;
         switch (category) {
           case 'cloth':
-            categoryId = 1;
+            categoryId = 1
+            setCategoryId(1)
             break;
           case 'electronicProduct':
-            categoryId = 2;
+            categoryId = 2
+            setCategoryId(2)
             break;
           case 'study':
-            categoryId = 3;
+            categoryId = 3
+            setCategoryId(3)
             break;
           case 'music':
-            categoryId = 4;
+            categoryId = 4
+            setCategoryId(4)
             break;
           case 'beauty':
-            categoryId = 5;
+            categoryId = 5
+            setCategoryId(5)
             break;
           case 'others':
-            categoryId = 6;
+            categoryId = 6
+            setCategoryId(6)
             break;
           default:
             break;
@@ -109,8 +115,10 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
           productSlices && productSlices.length > 0 ?
             <Grid templateColumns='repeat(4, 2fr)' gap={6} p-10 box-border >
               {productSlices?.map(productSlice =>
+
                 <Link key={productSlice.id} to={`/product/${productSlice.id}/${categoryId}`}>
                   <CategoryItem key={productSlice.id} name={productSlice.name} cover='/sliding/bg.jpeg' price={productSlice.price} publishTime={productSlice.publishTime} />
+                  <pre>aaa{categoryId}</pre>
                 </Link>
               )}
             </Grid> :

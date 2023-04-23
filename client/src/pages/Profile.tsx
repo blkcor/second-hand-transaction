@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Flex, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Center, Flex, Heading, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import request from '../axios';
@@ -187,12 +187,13 @@ const Profile: React.FC<ProfileProps> = () => {
           </AlertDialogOverlay >
         </AlertDialog >
         <Flex
-          mt-10
+          mt-5
           alignItems="center"
           justifyContent="center"
           flexDirection="column"
           gap="10"
         >
+
           <div className='avatar-container'
             w-50
             h-50

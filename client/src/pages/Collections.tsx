@@ -86,7 +86,10 @@ const Collections: React.FC<CollectionsProps> = () => {
                 return (
                   <>
                     <Tr key={product.id}>
-                      <Td>{product.name}</Td>
+                      <Td _hover={{
+                        color: "rgba(248, 113, 113,0.8)"
+
+                      }}><Link to={`/product/${product.id}/ ${product.categoryId}`}>{product.name}</Link></Td>
                       <Td><Image w-10 h-10 src={"/upload/" + product.cover} /></Td>
                       <Td>{
                         <Link to={`/category/${productTagMap[Number(product.categoryId)]}`}>

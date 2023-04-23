@@ -1,17 +1,17 @@
-import { Flex, Input, Image, Menu, MenuButton, Button, MenuList, MenuItem } from '@chakra-ui/react';
+import { Flex, Input, Image, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 
 
 type HeaderProps = {
-
+  content: string
 };
 type SearchInputState = "focus" | "blur"
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC<HeaderProps> = ({ content }) => {
   const navigate = useNavigate();
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
   const searchInputStyle = useMemo(() => {
@@ -19,13 +19,21 @@ const Header: React.FC<HeaderProps> = () => {
       return "border-2"
     }
   }, [searchInputState])
+
   const userState = useRecoilValue(userAtom)
   const currentUser = useMemo(() => {
     return userState
   }, [userState])
 
-  const handleClick = () => {
-    console.log("click")
+  const [searchContent, setSearchContent] = useState<string>()
+  const handleSearchRequest = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      navigate(`/search/${searchContent}`)
+    }
+  }
+
+  const handleSearchContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchContent(e.target.value)
   }
 
   const handleLogout = async () => {
@@ -71,6 +79,9 @@ const Header: React.FC<HeaderProps> = () => {
             variant='unstyled'
             onFocus={() => setSearchInputState("focus")}
             onBlur={() => setSearchInputState("blur")}
+            onChange={handleSearchContent}
+            onKeyDown={handleSearchRequest}
+            defaultValue={content}
           />
         </div>
         <Flex

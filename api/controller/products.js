@@ -94,3 +94,16 @@ const getAllproducts = (pageSize, offset, res) => {
 }
 
 
+export const searchProduct = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const { keyword } = req.params
+    const q = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?)"
+    db.query(q, [`%${keyword.toLowerCase()}%`], (err, result) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json(result)
+    })
+  })
+}
