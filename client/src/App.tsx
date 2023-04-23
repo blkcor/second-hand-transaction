@@ -10,6 +10,7 @@ import CategoryDetail from "./components/CategoryDetail"
 import ProductDetail from "./components/ProductDetail"
 import Collections from "./pages/Collections"
 import Search from "./pages/Search"
+import UserProfile from "./pages/UserProfile"
 
 function App() {
   const navigate = useNavigate()
@@ -36,6 +37,7 @@ function App() {
       <Route path="/product/:productId/:categoryId" element={<ProductDetail />} />
       <Route path="/collections" element={<Collections />} />
       <Route path="/search/:keyword" element={<Search />} />
+      <Route path="/user/:userId" element={<UserProfile />} />
     </Routes>
   )
 }

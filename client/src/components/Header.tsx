@@ -7,7 +7,7 @@ import axios from '../axios';
 
 
 type HeaderProps = {
-  content: string
+  content?: string
 };
 type SearchInputState = "focus" | "blur"
 

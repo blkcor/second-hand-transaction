@@ -118,12 +118,10 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
 
                 <Link key={productSlice.id} to={`/product/${productSlice.id}/${categoryId}`}>
                   <CategoryItem key={productSlice.id} name={productSlice.name} cover='/sliding/bg.jpeg' price={productSlice.price} publishTime={productSlice.publishTime} />
-                  <pre>aaa{categoryId}</pre>
                 </Link>
               )}
             </Grid> :
             <Center fw-800 text-8 text-red-500>暂无商品!</Center>
-
         }
       </div >
       <Footer />

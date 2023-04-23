@@ -81,46 +81,50 @@ const Collections: React.FC<CollectionsProps> = () => {
                 <Th>卖家信息</Th>
               </Tr>
             </Thead>
-            <Tbody>
-              {products.map(product => {
-                return (
-                  <>
-                    <Tr key={product.id}>
-                      <Td _hover={{
-                        color: "rgba(248, 113, 113,0.8)"
-
-                      }}><Link to={`/product/${product.id}/ ${product.categoryId}`}>{product.name}</Link></Td>
-                      <Td><Image w-10 h-10 src={"/upload/" + product.cover} /></Td>
-                      <Td>{
-                        <Link to={`/category/${productTagMap[Number(product.categoryId)]}`}>
-                          <span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(product.categoryId)] }}>{mapEngTagToChn[productTagMap[Number(product.categoryId)]]}</span>
-                        </Link>
-                      }</Td>
-                      <Td>{product.price}</Td>
-                      <Td
-                        _hover={{
-                          cursor: 'pointer',
+            {products.length === 0 ?
+              <Center position={"relative"} left-60 my-2 text-6 text-rose>看起来空荡荡的，快点去收藏一点喜欢的东西吧~</Center>
+              :
+              <Tbody>
+                {products.map(product => {
+                  return (
+                    <>
+                      <Tr key={product.id}>
+                        <Td _hover={{
                           color: "rgba(248, 113, 113,0.8)"
 
-                        }}>
-                        <Link to={"/profile"}>
-                          <div
-                            flex
-                            justify-start
-                            items-center
-                            gap-2
-                          >
+                        }}><Link to={`/product/${product.id}/${product.categoryId}`}>{product.name}</Link></Td>
+                        <Td><Image w-10 h-10 src={"/upload/" + product.cover} /></Td>
+                        <Td>{
+                          <Link to={`/category/${productTagMap[Number(product.categoryId)]}`}>
+                            <span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(product.categoryId)] }}>{mapEngTagToChn[productTagMap[Number(product.categoryId)]]}</span>
+                          </Link>
+                        }</Td>
+                        <Td>{product.price}</Td>
+                        <Td
+                          _hover={{
+                            cursor: 'pointer',
+                            color: "rgba(248, 113, 113,0.8)"
 
-                            <Box display={"inline-block"}><Image w-10 h-10 src={'/upload/' + sellerInfo?.avatar}></Image></Box>
-                            <Box display={"inline-block"}>{sellerInfo?.username}</Box>
-                          </div>
-                        </Link>
-                      </Td>
-                    </Tr >
-                  </>
-                )
-              })}
-            </Tbody>
+                          }}>
+                          <Link to={"/profile"}>
+                            <div
+                              flex
+                              justify-start
+                              items-center
+                              gap-2
+                            >
+
+                              <Box display={"inline-block"}><Image w-10 h-10 src={'/upload/' + sellerInfo?.avatar}></Image></Box>
+                              <Box display={"inline-block"}><Link to={`/user/${sellerInfo?.id}`}>{sellerInfo?.username}</Link></Box>
+                            </div>
+                          </Link>
+                        </Td>
+                      </Tr >
+                    </>
+                  )
+                })}
+              </Tbody>
+            }
             <Tfoot>
               <Tr>
                 <Th>商品名称</Th>

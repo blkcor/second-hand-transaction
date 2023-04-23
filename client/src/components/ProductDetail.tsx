@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import { Box, Button, Flex, Heading, Image } from '@chakra-ui/react';
@@ -25,57 +25,66 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const [sellerInfo, setSellerInfo] = useState<Seller>()
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [collected, setCollected] = useState<boolean>(false)
-
+  const [following, setFollowing] = useState<boolean>()
   useEffect(() => {
-    axios
-      .get('/collections')
-      .then(res => {
-        const collections = res.data
-        const currentUser = JSON.parse(localStorage.getItem('currentUser') as string) as User
-        const isCollected = collections.some((collection: any) => collection.user_id === currentUser.id && collection.product_id == productId)
-        setCollected(isCollected)
-      })
-      .catch(err => console.log(err))
-  }, [])
+    const fetchData = async () => {
+      if (productId) {
+        try {
+          // 获取收藏信息
+          const collectionsRes = await axios.get('/collections');
+          const collections = collectionsRes.data;
+          const currentUser = JSON.parse(localStorage.getItem('currentUser') as string) as User;
+          const isCollected = collections.some((collection: any) => collection.user_id === currentUser.id && collection.product_id == productId);
+          setCollected(isCollected);
 
-  useEffect(() => {
-    if (productId) {
-      const handleRequest = () => {
-        //get product info
-        axios
-          .get(`/products/${productId}`)
-          .then(res => {
-            //get seller info
-            axios
-              .get(`/users/find/${res.data['seller_id']}`)
-              .then(userInfo => {
-                setSellerInfo({
-                  id: userInfo.data.id,
-                  username: userInfo.data.username,
-                  avatar: userInfo.data.avatar
-                })
-                setProductInfo({
-                  id: res.data.id,
-                  name: res.data.name,
-                  price: res.data.price,
-                  publishTime: moment(res.data['publish_time']).format("YYYY-MM-DD"),
-                  cover: res.data.cover,
-                  description: res.data.description,
-                  sellerId: res.data['seller_id'],
-                  categoryId: res.data['category_id'],
-                  status: res.data.status,
-                  imageUrls: res.data['image_urls'].split(','),
-                });
-              })
+          // 获取产品信息
+          const productRes = await axios.get(`/products/${productId}`);
+          // 获取卖家信息
+          const sellerRes = await axios.get(`/users/find/${productRes.data['seller_id']}`);
+          //获取关注信息 
+          const followedUserIds = await axios.get(`/follows/`)
 
-          })
-          .catch(err => {
-            console.log(err);
+          setFollowing(followedUserIds.data.some((id: number) => id === sellerRes.data.id))
+
+          setSellerInfo({
+            id: sellerRes.data.id,
+            username: sellerRes.data.username,
+            avatar: sellerRes.data.avatar,
           });
-      };
-      handleRequest()
+
+          setProductInfo({
+            id: productRes.data.id,
+            name: productRes.data.name,
+            price: productRes.data.price,
+            publishTime: moment(productRes.data['publish_time']).format("YYYY-MM-DD"),
+            cover: productRes.data.cover,
+            description: productRes.data.description,
+            sellerId: productRes.data['seller_id'],
+            categoryId: productRes.data['category_id'],
+            status: productRes.data.status,
+            imageUrls: productRes.data['image_urls'].split(','),
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+
+    fetchData();
+  }, [productId]);
+
+  const handleFollow = async () => {
+    const params = {
+      followingId: sellerInfo?.id
     }
-  }, [productId])
+    const result = await axios.post("/follows/", params)
+    if (result.status === 200) setFollowing(true)
+  }
+
+  const handleCancelFollow = async () => {
+    const result = await axios.delete(`/follows/${sellerInfo?.id}`)
+    if (result.status === 200) setFollowing(false)
+  }
 
   const handleCollect = async () => {
     let result: AxiosResponse<any, any>;
@@ -126,14 +135,27 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
             <span fw-700 text-5 ><i mr-2 mb-1 text-red-600 i-carbon-tropical-storm-tracks />卖家名称:<span>{sellerInfo?.username}</span><i ml-2 mb-1 text-red-600 i-carbon-tropical-storm-tracks /></span>
           </Box>
           <Box>
-            <Button
-              mr-8
-              borderRadius={"10px"}
-              bg={"rgba(134, 239, 172,0.8)"}
-              _hover={{
-                bg: "rgba(34, 197, 94,0.8)"
-              }}>
-              <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-face-activated-add />关注</Button>
+            {following ?
+              <Button
+                mr-8
+                borderRadius={"10px"}
+                onClick={handleCancelFollow}
+                bg={"rgba(248, 113, 113,0.8)"}
+                _hover={{
+                  bg: "rgba(220, 38, 38,0.8)"
+                }}>
+                <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-airplay />取消关注</Button>
+              :
+              <Button
+                mr-8
+                borderRadius={"10px"}
+                bg={"rgba(134, 239, 172,0.8)"}
+                onClick={handleFollow}
+                _hover={{
+                  bg: "rgba(34, 197, 94,0.8)"
+                }}>
+                <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-face-activated-add />关注</Button>
+            }
             <Button
               borderRadius={"10px"}
               bg={"rgba(148, 163, 184, 0.8)"}
