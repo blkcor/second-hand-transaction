@@ -1,5 +1,4 @@
 import { atom } from 'recoil'
-import { User } from '../types/User'
 interface userState {
   id?: number,
   username?: string

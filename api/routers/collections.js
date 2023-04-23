@@ -4,6 +4,6 @@ const router = express.Router()
 
 router.post('/', createCollection)
 router.get('/', getCollections)
-router.delete('/:commodityId', deleteCollection)
+router.delete('/:productId', deleteCollection)
 
 export default router

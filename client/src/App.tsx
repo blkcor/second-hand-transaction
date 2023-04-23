@@ -8,6 +8,7 @@ import userAtom from "./atoms/authAtom"
 import Profile from "./pages/Profile"
 import CategoryDetail from "./components/CategoryDetail"
 import ProductDetail from "./components/ProductDetail"
+import Collections from "./pages/Collections"
 
 function App() {
   const navigate = useNavigate()
@@ -31,7 +32,8 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/category/:category" element={<CategoryDetail />} />
-      <Route path="/product/:productId" element={<ProductDetail />} />
+      <Route path="/product/:productId/:categoryId" element={<ProductDetail />} />
+      <Route path="/collections" element={<Collections />} />
     </Routes>
   )
 }

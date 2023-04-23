@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { Box, Button, ButtonGroup, Flex, Heading, Image } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Image } from '@chakra-ui/react';
 import {
   Product,
   productTagMap,
@@ -12,14 +12,37 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from '../axios';
 import moment from 'moment';
 import { User } from '../types/User';
+import { AxiosResponse } from 'axios';
 type ProductDetailProps = {
 
 };
 
+type Seller = {
+  id: number,
+  username: string,
+  avatar: string
+}
+
 const ProductDetail: React.FC<ProductDetailProps> = () => {
   const productId = useLocation().pathname.split("/")[2]
+  const categoryId = useLocation().pathname.split("/")[3]
   const [productInfo, setProductInfo] = useState<Product>()
-  const [sellerInfo, setSellerInfo] = useState<User>()
+  const [sellerInfo, setSellerInfo] = useState<Seller>()
+  const [currentImage, setCurrentImage] = useState<number>(0)
+  const [collected, setCollected] = useState<boolean>(false)
+
+  useEffect(() => {
+    axios
+      .get('/collections')
+      .then(res => {
+        const collections = res.data
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') as string) as User
+        const isCollected = collections.some((collection: any) => collection.user_id === currentUser.id && collection.product_id == productId)
+        setCollected(isCollected)
+      })
+      .catch(err => console.log(err))
+  }, [])
+
   useEffect(() => {
     if (productId) {
       const handleRequest = () => {
@@ -34,6 +57,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 setSellerInfo({
                   id: userInfo.data.id,
                   username: userInfo.data.username,
+                  avatar: userInfo.data.avatar
                 })
                 setProductInfo({
                   id: res.data.id,
@@ -57,6 +81,23 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
       handleRequest()
     }
   }, [productId])
+
+  const handleCollect = async () => {
+    let result: AxiosResponse<any, any>;
+    //如果没有收藏 我们收藏
+    if (!collected) {
+      const params = {
+        userId: (JSON.parse(localStorage.getItem('currentUser') as string) as User).id,
+        productId
+      }
+      result = await axios.post(`/collections/`, params)
+    } else {
+      //如果已经收藏 我们取消收藏
+      result = await axios.delete(`/collections/${productId}`)
+    }
+
+    if (result.status === 200) setCollected(!collected)
+  }
   return (
     <>
       <Header />
@@ -79,7 +120,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
 
         >
           <Image
-            src='/sliding/bg.jpeg'
+            src={"/upload/" + sellerInfo?.avatar}
             rounded={"50%"}
             width={"60px"}
             height={"60px"}
@@ -119,13 +160,25 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           gap-2
         >
           <Box boxSizing='border-box'>
-            <Image className='main-pic' w-110 h-110 src='/sliding/bg2.jpeg' rounded-2 objectFit={'cover'} />
+            <Image className='main-pic' w-110 h-110 src={productInfo?.imageUrls[currentImage]} rounded-2 objectFit={'cover'} />
             <Flex className='pre-pics' justify-between mt-2 >
-              <Image className='main-pic' w-16 h-16 src='/sliding/bg.jpeg' rounded-2 objectFit={'cover'} />
-              <Image className='main-pic' border={"2px solid red"} w-16 h-16 src='/sliding/bg2.jpeg' rounded-2 objectFit={'cover'} />
-              <Image className='main-pic' w-16 h-16 src='/sliding/bg3.jpeg' rounded-2 objectFit={'cover'} />
-              <Image className='main-pic' w-16 h-16 src='/sliding/bg3.jpeg' rounded-2 objectFit={'cover'} />
-              <Image className='main-pic' w-16 h-16 src='/sliding/bg4.jpeg' rounded-2 objectFit={'cover'} />
+              {
+                productInfo?.imageUrls
+                  .map((image, index) =>
+                    <Image
+                      key={index}
+                      onClick={() => setCurrentImage(index)}
+                      className='main-pic'
+                      w-16
+                      h-16
+                      src={image}
+                      rounded-2 objectFit={'cover'}
+                      border={currentImage === index ? "2px solid red" : "none"}
+                      _hover={{
+                        cursor: 'pointer'
+                      }}
+                    />)
+              }
             </Flex>
           </Box>
           <Flex
@@ -148,10 +201,16 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
               </Heading>
               <Box _hover={{
                 cursor: "pointer"
+
               }}
+                onClick={handleCollect}
                 mt--6
                 ml="auto">
-                <i i-carbon-star />
+                {collected ?
+                  <i i-carbon-star-filled /> :
+                  <i i-carbon-star />
+
+                }
               </Box>
             </Flex>
             <div text-red-500>优惠价格:¥<span text-8>{productInfo?.price}</span></div>
@@ -166,8 +225,8 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
               {productInfo?.description}
             </div>
             <div mt-2>
-              <Link to={`/category/${productTagMap[Number(productId)]}`}>
-                分类：<span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(productId)] }}>{mapEngTagToChn[productTagMap[Number(productId)]]}</span>
+              <Link to={`/category/${productTagMap[Number(categoryId)]}`}>
+                分类：<span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(categoryId)] }}>{mapEngTagToChn[productTagMap[Number(categoryId)]]}</span>
               </Link>
             </div>
             <Flex

@@ -92,7 +92,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
           productSlices && productSlices.length > 0 ?
             <Grid templateColumns='repeat(5, 2fr)' gap={6} p-10 box-border >
               {productSlices?.map(productSlice =>
-                <Link key={productSlice.id} to={`/product/${productSlice.id}`}>
+                <Link key={productSlice.id} to={`/product/${productSlice.id}/${categoryId}`}>
                   <CategoryItem key={productSlice.id} name={productSlice.name} cover='/sliding/bg.jpeg' price={productSlice.price} publishTime={productSlice.publishTime} />
                 </Link>
               )}

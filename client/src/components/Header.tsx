@@ -79,8 +79,13 @@ const Header: React.FC<HeaderProps> = () => {
           items-center
           gap-4
           pr-8
-
         >
+          <div className='collection'>
+
+            <Link to={"/collections"}>
+              <Image src='/collection.svg' h-11 _hover={{ cursor: "pointer" }} />
+            </Link>
+          </div>
           <div className='order'>
             <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
           </div>
