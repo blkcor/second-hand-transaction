@@ -13,16 +13,14 @@ const RotatingImage: React.FC<RotatingImageProps> = ({
   onChangeIndex = () => { }
 }) => {
   const [autoPlay, setAutoPlay] = useState(true);
-
   useEffect(() => {
     let timer: number;
 
     if (autoPlay) {
       timer = setInterval(() => {
         onChangeIndex((currentIndex + 1) % images.length);
-      }, 2000);
+      }, 1000);
     }
-
     return () => {
       if (timer) clearInterval(timer);
     };

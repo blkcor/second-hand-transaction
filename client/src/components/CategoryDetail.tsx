@@ -26,62 +26,64 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
   const [products, setProducts] = useState<Product[] | null>(null)
   const [productSlices, setProductSlices] = useState<ProductSlice[] | null>(null)
 
-  useEffect(() => {
-    if (category === 'cloth') {
-      setCategoryId(1)
-    } else if (category === 'electronicProduct') {
-      setCategoryId(2)
-    } else if (category === 'study') {
-      setCategoryId(3)
-    } else if (category === 'music') {
-      setCategoryId(4)
-    } else if (category === 'beauty') {
-      setCategoryId(5)
-    } else if (category === 'others') {
-      setCategoryId(6)
-    }
 
-    const handleRequest = () => {
-      axios
-        .get(`/products?categoryId=${categoryId}`)
-        .then(res => {
-          //mysql 的格式是真的狗屎
-          setProducts(res.data.map((product: any) => {
-            return {
-              ...product,
-              id: product.id,
-              description: product.description,
-              price: product.price,
-              publishTime: moment(product['publish_time']).format("YYYY-MM-DD"),
-              sellerId: product['seller_id'],
-              categoryId: product['category_id'],
-              cover: product.cover,
-              status: product.status,
-              imageUrls: product['image_urls'],
-              name: product.name,
-            }
-          }))
-        })
-        .catch(err => {
-          console.log(err);
-        });
+  useEffect(() => {
+    const handleRequest = async () => {
+      try {
+        let categoryId = 0;
+        switch (category) {
+          case 'cloth':
+            categoryId = 1;
+            break;
+          case 'electronicProduct':
+            categoryId = 2;
+            break;
+          case 'study':
+            categoryId = 3;
+            break;
+          case 'music':
+            categoryId = 4;
+            break;
+          case 'beauty':
+            categoryId = 5;
+            break;
+          case 'others':
+            categoryId = 6;
+            break;
+          default:
+            break;
+        }
+
+        const res = await axios.get(`/products?categoryId=${categoryId}`);
+        const products = res.data.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          publishTime: moment(product.publish_time).format('YYYY-MM-DD'),
+          sellerId: product.seller_id,
+          categoryId: product.category_id,
+          cover: product.cover,
+          status: product.status,
+          imageUrls: product.image_urls,
+        }));
+
+        setProducts(products);
+        const productSlices = products.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          publishTime: product.publishTime,
+          cover: product.cover,
+        }));
+        setProductSlices(productSlices);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
-    handleRequest()
-    const productSlices = products?.map(product => {
-      const productSlice: ProductSlice = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        publishTime: product.publishTime,
-        cover: product.cover
-      }
-      return productSlice
-    })
-    setProductSlices(productSlices as ProductSlice[])
-
-  }, [category, categoryId, products])
-
+    handleRequest();
+  }, [category]);
 
   return (
     <>
