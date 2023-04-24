@@ -3,10 +3,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, Heading, Center, Image, flexbox } from '@chakra-ui/react';
 import axios from '../axios';
-import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
-import { Link } from 'react-router-dom';
+import { Product } from '../types/Product';
 import moment from 'moment';
-import { Seller } from '../types/Seller';
+import CollectionItem from '../components/CollectionItem';
 
 type CollectionsProps = {
 
@@ -19,18 +18,19 @@ type collection = {
 }
 const Collections: React.FC<CollectionsProps> = () => {
   const [products, setProducts] = useState<Product[]>([])
-  const [sellerInfo, setSellerInfo] = useState<Seller>()
+
   useEffect(() => {
     axios
       .get("/collections")
       .then(async (res) => {
         const productIds: number[] = res.data.map((collection: collection) => collection.product_id)
-        const userId = res.data[0].user_id
         const params = {
           ids: productIds
         }
         const productsInfo = await axios.get('/products/getByIds', { params })
-        const userInfo = await axios.get(`/users/find/${userId}`)
+
+
+
         setProducts(productsInfo.data.map((product: any) => {
           return {
             ...product,
@@ -46,11 +46,7 @@ const Collections: React.FC<CollectionsProps> = () => {
             name: product.name,
           }
         }))
-        setSellerInfo({
-          id: userInfo.data.id,
-          username: userInfo.data.username,
-          avatar: userInfo.data.avatar
-        })
+
       })
       .catch(err => console.log(err))
   }, [])
@@ -87,40 +83,7 @@ const Collections: React.FC<CollectionsProps> = () => {
               <Tbody>
                 {products.map(product => {
                   return (
-                    <>
-                      <Tr key={product.id}>
-                        <Td _hover={{
-                          color: "rgba(248, 113, 113,0.8)"
-
-                        }}><Link to={`/product/${product.id}/${product.categoryId}`}>{product.name}</Link></Td>
-                        <Td><Image w-10 h-10 src={"/upload/" + product.cover} /></Td>
-                        <Td>{
-                          <Link to={`/category/${productTagMap[Number(product.categoryId)]}`}>
-                            <span fw-800 p-2 rounded-2 style={{ backgroundColor: productTagColorMap[Number(product.categoryId)] }}>{mapEngTagToChn[productTagMap[Number(product.categoryId)]]}</span>
-                          </Link>
-                        }</Td>
-                        <Td>{product.price}</Td>
-                        <Td
-                          _hover={{
-                            cursor: 'pointer',
-                            color: "rgba(248, 113, 113,0.8)"
-
-                          }}>
-                          <Link to={"/profile"}>
-                            <div
-                              flex
-                              justify-start
-                              items-center
-                              gap-2
-                            >
-
-                              <Box display={"inline-block"}><Image w-10 h-10 src={'/upload/' + sellerInfo?.avatar}></Image></Box>
-                              <Box display={"inline-block"}><Link to={`/user/${sellerInfo?.id}`}>{sellerInfo?.username}</Link></Box>
-                            </div>
-                          </Link>
-                        </Td>
-                      </Tr >
-                    </>
+                    <CollectionItem key={product.id} product={product} />
                   )
                 })}
               </Tbody>

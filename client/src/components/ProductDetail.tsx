@@ -43,11 +43,10 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           // 获取卖家信息
           const sellerRes = await axios.get(`/users/find/${productRes.data['seller_id']}`);
           //获取关注信息 
-          const followedUserIds = await axios.get(`/follows/`)
-
+          const followedUserIds = await axios.get(`/follows/following`);
           //设置是否是自己
           setIsSelf(sellerRes.data.id === (JSON.parse(localStorage.getItem('currentUser') as string) as User).id)
-          setFollowing(followedUserIds.data.some((id: number) => id === sellerRes.data.id))
+          setFollowing(followedUserIds.data.some((user: any) => user.followed_id === sellerRes.data.id))
 
           setSellerInfo({
             id: sellerRes.data.id,
@@ -104,6 +103,10 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
     }
 
     if (result.status === 200) setCollected(!collected)
+  }
+
+  const handleAddShopping = () => {
+
   }
   return (
     <>
@@ -263,6 +266,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                   bg: "rgba(234, 88, 12,0.8)"
                 }}
                 text-white
+                onClick={handleAddShopping}
               ><i mr-2 i-carbon-shopping-cart />加入购物车</Button>
               <Button
                 text-white

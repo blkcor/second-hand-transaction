@@ -79,3 +79,19 @@ export const isMutualed = (req, res) => {
     })
   })
 }
+
+//根据id查询关注的人
+export const getFollowings = (req, res) => {
+  console.log(112)
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const q = "SELECT * FROM follows WHERE following_id = ?"
+    console.log(userInfo.id)
+    db.query(q, [userInfo.id], (err, result) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json(result)
+    })
+  })
+}
