@@ -4,19 +4,22 @@ import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
+import { SearchInputState } from '../types/SearchInput';
 
 
 type HeaderProps = {
   content?: string
 };
-type SearchInputState = "focus" | "blur"
+
 
 const Header: React.FC<HeaderProps> = ({ content }) => {
   const navigate = useNavigate();
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
   const searchInputStyle = useMemo(() => {
     if (searchInputState === "focus") {
-      return "border-2"
+      return "3"
+    } else {
+      return "1"
     }
   }, [searchInputState])
 
@@ -64,10 +67,13 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
             <Image src='/logo.svg' w-75 />
           </Link>
         </div>
-        <div className={`search ${searchInputStyle}`}
+        <div
+          style={{
+            border: `${searchInputStyle}px solid`
+          }}
+          className='search'
           flex
           flex-row
-          border-1
           rounded-2
           box-border
           p-1
@@ -116,13 +122,14 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
             </MenuButton>
             <MenuList>
               <Link to={"/profile"}> <MenuItem><span text-black>Profile</span></MenuItem></Link>
+              <Link to={"/follower/" + currentUser.id}> <MenuItem><span text-black>Follower</span></MenuItem></Link>
               <MenuItem onClick={handleLogout}><span text-black>Logout</span></MenuItem>
             </MenuList>
           </Menu>
 
 
         </Flex>
-      </Flex>
+      </Flex >
     </>
   )
 };

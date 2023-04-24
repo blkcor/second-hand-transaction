@@ -26,6 +26,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [collected, setCollected] = useState<boolean>(false)
   const [following, setFollowing] = useState<boolean>()
+  const [isSelf, setIsSelf] = useState<boolean>()
   useEffect(() => {
     const fetchData = async () => {
       if (productId) {
@@ -44,6 +45,8 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           //获取关注信息 
           const followedUserIds = await axios.get(`/follows/`)
 
+          //设置是否是自己
+          setIsSelf(sellerRes.data.id === (JSON.parse(localStorage.getItem('currentUser') as string) as User).id)
           setFollowing(followedUserIds.data.some((id: number) => id === sellerRes.data.id))
 
           setSellerInfo({
@@ -75,7 +78,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
 
   const handleFollow = async () => {
     const params = {
-      followingId: sellerInfo?.id
+      followedId: sellerInfo?.id
     }
     const result = await axios.post("/follows/", params)
     if (result.status === 200) setFollowing(true)
@@ -145,16 +148,16 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                   bg: "rgba(220, 38, 38,0.8)"
                 }}>
                 <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-airplay />取消关注</Button>
-              :
-              <Button
-                mr-8
-                borderRadius={"10px"}
-                bg={"rgba(134, 239, 172,0.8)"}
-                onClick={handleFollow}
-                _hover={{
-                  bg: "rgba(34, 197, 94,0.8)"
-                }}>
-                <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-face-activated-add />关注</Button>
+              : isSelf ?
+                null : <Button
+                  mr-8
+                  borderRadius={"10px"}
+                  bg={"rgba(134, 239, 172,0.8)"}
+                  onClick={handleFollow}
+                  _hover={{
+                    bg: "rgba(34, 197, 94,0.8)"
+                  }}>
+                  <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-face-activated-add />关注</Button>
             }
             <Button
               borderRadius={"10px"}
@@ -162,7 +165,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
               _hover={{
                 bg: "rgba(71, 85, 105, 0.8)"
               }}
-            ><i text-zinc-600 mt="0.5px" mr-1 i-carbon-home />主页</Button>
+            ><Link to={isSelf ? `/profile` : `/user/${sellerInfo?.id}`}><i text-zinc-600 mt="0.5px" mr-1 i-carbon-home />主页</Link></Button>
           </Box>
         </Flex>
         <Flex

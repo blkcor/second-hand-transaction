@@ -27,4 +27,25 @@ export const updateUser = (req, res) => {
     })
   })
 
-} 
+}
+
+
+//根据id批量查找用户
+export const getUsers = (req, res) => {
+  const q = "SELECT * FROM users WHERE id IN (?)"
+  db.query(q, [req.query.ids], (err, result) => {
+    if (err) return res.status(500).json(err)
+    if (result.length === 0) return res.status(404).json({ message: 'User not found' })
+    return res.status(200).json(result)
+  })
+}
+
+//用户名模糊查询用户
+export const searchUsers = (req, res) => {
+  const q = "SELECT * FROM users WHERE username LIKE ?"
+  db.query(q, [`%${req.params.username}%`], (err, result) => {
+    if (err) return res.status(500).json(err)
+    if (result.length === 0) return res.status(204).json({ message: 'User not found' })
+    return res.status(200).json(result)
+  })
+}

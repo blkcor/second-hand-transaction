@@ -11,6 +11,7 @@ import ProductDetail from "./components/ProductDetail"
 import Collections from "./pages/Collections"
 import Search from "./pages/Search"
 import UserProfile from "./pages/UserProfile"
+import Follower from "./pages/Follower"
 
 function App() {
   const navigate = useNavigate()
@@ -38,6 +39,7 @@ function App() {
       <Route path="/collections" element={<Collections />} />
       <Route path="/search/:keyword" element={<Search />} />
       <Route path="/user/:userId" element={<UserProfile />} />
+      <Route path="/follower/:userId" element={<Follower />} />
     </Routes>
   )
 }
