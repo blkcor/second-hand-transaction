@@ -6,7 +6,7 @@ import RotatingImage from './RotatingImage';
 
 
 type WelcomeProps = {
-  activeItem: string
+  activeItem?: string
 };
 
 const images = [
