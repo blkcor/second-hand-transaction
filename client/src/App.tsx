@@ -13,12 +13,29 @@ import Search from "./pages/Search"
 import UserProfile from "./pages/UserProfile"
 import Follower from "./pages/Follower"
 import Shoppings from "./pages/Shoppings"
+import cartAtom from "./atoms/cartsAtom"
+import axios from "./axios"
 
 function App() {
   const navigate = useNavigate()
   const user = localStorage.getItem('currentUser')
   const [userState, setUserState] = useRecoilState(userAtom);
+  const [cartState, setCartState] = useRecoilState(cartAtom);
   useEffect(() => {
+    const handleFetch = async () => {
+      try {
+        const result = await axios.get('/carts')
+        if (result.status === 200) {
+          const productIds = result.data.map((cart: any) => cart.product_id)
+          const cart = {
+            productIds: productIds,
+          }
+          localStorage.setItem("carts", JSON.stringify(cart))
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
     if (user === null) {
       localStorage.setItem("unlogin", "y")
       navigate('/login')
@@ -26,7 +43,9 @@ function App() {
     else {
       const currentUser = JSON.parse(localStorage.getItem('currentUser') as string)
       setUserState(currentUser)
+      handleFetch()
     }
+
   }, [user])
 
   return (

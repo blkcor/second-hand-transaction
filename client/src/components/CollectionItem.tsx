@@ -15,7 +15,6 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ product }) => {
   useEffect(() => {
     const handleFetch = async () => {
       const userInfo = await axios.get(`/users/find/${product.sellerId}`)
-      console.log(userInfo)
       setSellerInfo({
         id: userInfo.data.id,
         username: userInfo.data.username,
@@ -26,7 +25,7 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ product }) => {
   }, [])
   return (
     <>
-      <Tr key={product.id}>
+      <Tr>
         <Td _hover={{
           color: "rgba(248, 113, 113,0.8)"
 

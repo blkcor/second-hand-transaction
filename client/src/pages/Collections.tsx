@@ -29,8 +29,6 @@ const Collections: React.FC<CollectionsProps> = () => {
         }
         const productsInfo = await axios.get('/products/getByIds', { params })
 
-
-
         setProducts(productsInfo.data.map((product: any) => {
           return {
             ...product,
@@ -65,7 +63,7 @@ const Collections: React.FC<CollectionsProps> = () => {
         p-2
       >
         <Center mb-2 fw-800 fontSize={'3xl'}>我的收藏</Center>
-        <TableContainer h-60vh>
+        <TableContainer min-h-60vh>
           <Table variant='simple'>
             <TableCaption>some collections</TableCaption>
             <Thead>
@@ -88,15 +86,6 @@ const Collections: React.FC<CollectionsProps> = () => {
                 })}
               </Tbody>
             }
-            <Tfoot>
-              <Tr>
-                <Th>商品名称</Th>
-                <Th>商品图片</Th>
-                <Th>商品分类</Th>
-                <Th>商品价格</Th>
-                <Th>卖家信息</Th>
-              </Tr>
-            </Tfoot>
           </Table>
         </TableContainer>
       </Box >

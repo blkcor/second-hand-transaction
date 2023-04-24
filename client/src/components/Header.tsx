@@ -44,6 +44,7 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
   const handleLogout = async () => {
     await axios.post("/auth/logout")
     localStorage.removeItem("currentUser")
+    localStorage.removeItem("carts")
     navigate("/login")
   }
   return (

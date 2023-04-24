@@ -67,7 +67,6 @@ const Follower: React.FC<FollowerProps> = () => {
         const followInfo = await axios.get("/follows")
         const followingIds = followInfo.data.map((follow: any) => follow.following_id)
         const filterResult = result.data.filter((user: any) => followingIds.includes(user.id))
-        console.log(filterResult)
         if (result.status === 200 && filterResult.length > 0) {
           const promiseArray = filterResult?.data?.map(async (user: any) => {
             return await axios.get(`/follows/mutualed/${user.id}`)
