@@ -14,6 +14,8 @@ import moment from 'moment';
 import { User } from '../types/User';
 import { AxiosResponse } from 'axios';
 import { Seller } from '../types/Seller';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import cartAtom, { cartState, defaultCartAtom } from '../atoms/cartsAtom';
 type ProductDetailProps = {
 
 };
@@ -27,6 +29,14 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const [collected, setCollected] = useState<boolean>(false)
   const [following, setFollowing] = useState<boolean>()
   const [isSelf, setIsSelf] = useState<boolean>()
+  const [added, setAdded] = useState<boolean>()
+  //购物车信息
+  const cartState = useRecoilState(cartAtom);
+  function updateCart(newCart: cartState) {
+    setCartState(newCart);
+  }
+
+  const setCartState = useSetRecoilState(cartAtom);
   useEffect(() => {
     const fetchData = async () => {
       if (productId) {
@@ -73,7 +83,10 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
     };
 
     fetchData();
+    setAdded(cartState[0]?.productIds?.includes(Number(productId)))
   }, [productId]);
+
+
 
   const handleFollow = async () => {
     const params = {
@@ -105,8 +118,17 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
     if (result.status === 200) setCollected(!collected)
   }
 
-  const handleAddShopping = () => {
+  const handleAddShopping = async () => {
 
+    const result = await axios.post(`/carts/add`, { productId })
+    if (result.status === 200) {
+      const newCart = {
+        productIds: [...(defaultCartAtom.productIds ?? []), Number(productId)],
+      };
+      updateCart(newCart);
+      localStorage.setItem("carts", JSON.stringify(newCart));
+      setAdded(true)
+    }
   }
   return (
     <>
@@ -260,7 +282,14 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
               mt-10
               p-5
               w-20vw
-            >
+            >{added ?
+              <Button
+                bg={'rgba(232, 121, 249,0.4)'} _hover={{
+                  bg: "rgba(232, 121, 249,0.8)"
+                }}
+                text-white
+              ><i mr-2 i-carbon-cd-create-archive />已加入购物车</Button>
+              :
               <Button
                 bg={'rgba(251, 146, 60,0.8)'} _hover={{
                   bg: "rgba(234, 88, 12,0.8)"
@@ -268,6 +297,10 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 text-white
                 onClick={handleAddShopping}
               ><i mr-2 i-carbon-shopping-cart />加入购物车</Button>
+
+
+
+              }
               <Button
                 text-white
                 bg={"rgba(74, 222, 128,0.8)"}

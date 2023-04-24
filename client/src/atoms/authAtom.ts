@@ -7,7 +7,7 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser") as string) as
   id: 0,
   username: ''
 }
-const defaultUserAtom: userState = currentUser
+const defaultUserAtom: userState = Object.assign({}, currentUser)
 
 const userAtom = atom<userState>({
   key: 'userState',

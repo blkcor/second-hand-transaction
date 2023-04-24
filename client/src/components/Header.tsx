@@ -1,10 +1,11 @@
 import { Flex, Input, Image, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 import { SearchInputState } from '../types/SearchInput';
+import cartAtom from '../atoms/cartsAtom';
 
 
 type HeaderProps = {
@@ -13,6 +14,7 @@ type HeaderProps = {
 
 
 const Header: React.FC<HeaderProps> = ({ content }) => {
+  const cartState = useRecoilState(cartAtom)
   const navigate = useNavigate();
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
   const searchInputStyle = useMemo(() => {
@@ -107,7 +109,20 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
             <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
           </div>
           <div className='shopping'>
+            { }
             <Link to={"/shoppings"}>
+              <span
+                block
+                w-6
+                h-6
+                text-center
+                bg-red-600
+                text-white
+                rounded='50%'
+                absolute
+                top-1
+                right-33
+              >{cartState[0].productIds?.length}</span>
               <Image src='/shopping.svg' h-10 _hover={{ cursor: "pointer" }} />
             </Link>
           </div>
