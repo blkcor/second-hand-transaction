@@ -39,9 +39,9 @@ export const publishproduct = (req, res) => {
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
-    const q = "INSERT INTO products (name, description, price, type, publishAt,publishUserId) VALUES (?)";
-    const { name, description, price, type } = req.body;
-    const params = [name, description, price, type, moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'), userInfo.id];
+    const q = "INSERT INTO products (name, description, price, category_id, seller_id,status,publish_time,image_urls,cover) VALUES (?)";
+    console.log(req.body)
+    const params = [req.body.name, req.body.description, req.body.price, Number(req.body.categoryId), req.body.sellerId, req.body.status, moment().format("YYYY-MM-DD"), req.body.imageUrls, req.body.cover]
     db.query(q, [params], (err, result) => {
       if (err) return res.status(500).json(err);
       if (result.affectedRows > 0) return res.status(200).json({ message: "product published" });

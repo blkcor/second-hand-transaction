@@ -51,6 +51,11 @@ app.use('/api/upload', upload.single('file'), (req, res) => {
   res.status(200).json(file.filename)
 })
 
+app.use('/api/uploads', upload.array('files'), (req, res) => {
+  const files = req.files
+  res.status(200).json(files.map(file => file.filename))
+})      //multiple file upload
+
 //start
 app.listen(PORT, () => {
   console.log(`[server]: Server is running at http://localhost:${PORT}`);
