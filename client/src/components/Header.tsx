@@ -110,20 +110,24 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
             <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
           </div>
           <div className='shopping'>
-            { }
             <Link to={"/shoppings"}>
-              <span
-                block
-                w-6
-                h-6
-                text-center
-                bg-red-600
-                text-white
-                rounded='50%'
-                absolute
-                top-1
-                right-33
-              >{cartState[0].productIds?.length}</span>
+              {
+                cartState[0] && cartState[0].productIds && cartState[0]?.productIds?.length > 0 ?
+                  <span
+                    block
+                    w-6
+                    h-6
+                    text-center
+                    bg-red-600
+                    text-white
+                    rounded='50%'
+                    absolute
+                    top-1
+                    right-33
+                  >{
+                      cartState[0].productIds?.length
+                    }</span> : null
+              }
               <Image src='/shopping.svg' h-10 _hover={{ cursor: "pointer" }} />
             </Link>
           </div>
