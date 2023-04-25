@@ -107,3 +107,17 @@ export const searchProduct = (req, res) => {
     })
   })
 }
+
+//获取自己的所有物品
+export const getAllProducts = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const q = "SELECT * FROM products WHERE seller_id = ?"
+    db.query(q, [userInfo.id], (err, result) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json(result)
+    })
+  })
+}
