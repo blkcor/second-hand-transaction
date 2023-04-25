@@ -6,6 +6,8 @@ import { Box, Button, Center, Flex, Image, Input, Select, Textarea } from '@chak
 import ProfileInput from '../components/ProfileInput';
 import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
 import moment from 'moment';
+import axios from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 type PublishProps = {
 
@@ -24,6 +26,7 @@ const Publish: React.FC<PublishProps> = () => {
     name: '',
 
   })
+  const navigate = useNavigate()
   const [productFiles, setProductFiles] = useState<File[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [cover, setCover] = useState<string>()
@@ -45,15 +48,14 @@ const Publish: React.FC<PublishProps> = () => {
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { id, value } = e.target;
-    console.log(id, value)
     setProduct(prev => ({
       ...prev,
       [id]: value
     }))
   }
 
-  const updateCover = (files: File) => {
-    setCoverFile(files);
+  const updateCover = async (file: File) => {
+    setCoverFile(file);
   }
 
   const updateProductImages = (files: File[]) => {
@@ -79,8 +81,32 @@ const Publish: React.FC<PublishProps> = () => {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    const formData = new FormData();
+    const formData2 = new FormData();
+    try {
+      //upload cover
+      formData.append("file", coverFile as File);
+      productFiles.forEach(file => {
+        formData2.append("files", file);
+      })
+      const res = await axios.post("/upload", formData);
+      const result = await axios.post("/uploads", formData2);
+      setProduct(prev => ({
+        ...prev,
+        imageUrls: result.data,
+        cover: res.data
+      }))
 
+      const proRe = await axios.post('/products', product)
+      if (proRe.status === 200) {
+        alert('发布成功')
+        navigate('/')
+      }
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (

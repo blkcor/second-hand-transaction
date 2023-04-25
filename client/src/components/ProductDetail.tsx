@@ -205,7 +205,8 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           gap-2
         >
           <Box boxSizing='border-box'>
-            <Image className='main-pic' w-110 h-110 src={productInfo?.imageUrls[currentImage]} rounded-2 objectFit={'cover'} />
+
+            <Image className='main-pic' w-110 h-110 src={'/upload/' + productInfo?.imageUrls[currentImage]} rounded-2 objectFit={'cover'} />
             <Flex className='pre-pics' justify-between mt-2 >
               {
                 productInfo?.imageUrls
@@ -216,7 +217,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                       className='main-pic'
                       w-16
                       h-16
-                      src={image}
+                      src={"/upload/" + image}
                       rounded-2 objectFit={'cover'}
                       border={currentImage === index ? "2px solid red" : "none"}
                       _hover={{
