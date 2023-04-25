@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, Heading, Center, Image, flexbox } from '@chakra-ui/react';
+import { TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Box, Center, flexbox } from '@chakra-ui/react';
 import axios from '../axios';
 import { Product } from '../types/Product';
 import moment from 'moment';

@@ -34,6 +34,8 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         setTotal(productsInfo.data.reduce((acc: number, cur: any) => {
           return acc + cur.price
         }, 0))
+      } else {
+        setTotal(0)
       }
       const params = {
         ids: cartState[0].productIds
