@@ -16,6 +16,7 @@ import Shoppings from "./pages/Shoppings"
 import cartAtom from "./atoms/cartsAtom"
 import axios from "./axios"
 import Publish from "./pages/Publish"
+import Products from "./pages/Products"
 
 function App() {
   const navigate = useNavigate()
@@ -63,6 +64,7 @@ function App() {
       <Route path="/follower/:userId" element={<Follower />} />
       <Route path="/shoppings" element={<Shoppings />} />
       <Route path="/publish" element={<Publish />} />
+      <Route path="/products" element={<Products />} />
     </Routes>
   )
 }
