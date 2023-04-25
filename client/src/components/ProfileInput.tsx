@@ -6,7 +6,7 @@ type ProfileInputProps = {
   placeHolder?: string
   type: "text" | "password" | "email" | "number" | "date" | "radio"
   id: string,
-  value?: string;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disable?: boolean;
 };

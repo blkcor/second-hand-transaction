@@ -13,7 +13,7 @@ type SearchProps = {
 };
 
 const Search: React.FC<SearchProps> = () => {
-  const searchContent = useLocation().pathname.split("/")[2]
+  const searchContent = decodeURIComponent(useLocation().pathname.split("/")[2])
   const [searchResult, setSearchResult] = useState<Product[]>()
   useEffect(() => {
     axios
@@ -51,7 +51,6 @@ const Search: React.FC<SearchProps> = () => {
         flex-col
         gap-4
       >
-        {/* FIXME:搜索结果不支持中文 */}
         <Heading as={"h2"} fontSize={"20px"}>搜索结果：<span text-red-300 italic>{searchContent}</span></Heading>
         <Heading letterSpacing={"2px"} as={"h3"} fontSize={"15px"}>共<span text-red-500>{searchResult?.length}</span>条:</Heading>
         <Grid templateColumns='repeat(4, 2fr)' gap={6}>

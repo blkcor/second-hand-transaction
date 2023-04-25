@@ -1,0 +1,189 @@
+import React, { useState } from 'react';
+import FileUpload from '../components/FileUpload';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { Box, Button, Center, Flex, Image, Input, Select, Textarea } from '@chakra-ui/react';
+import ProfileInput from '../components/ProfileInput';
+import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
+import moment from 'moment';
+
+type PublishProps = {
+
+};
+
+const Publish: React.FC<PublishProps> = () => {
+  const [product, setProduct] = useState<Product>({
+    description: '',
+    price: 0,
+    publishTime: moment().format("YYYY-MM-DD"),
+    sellerId: JSON.parse(localStorage.getItem('currentUser') as string).id,
+    categoryId: 0,
+    cover: '',
+    status: 1,
+    imageUrls: [],
+    name: '',
+
+  })
+  const [productFiles, setProductFiles] = useState<File[]>([]);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [cover, setCover] = useState<string>()
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setProduct(prev => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  const handleAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setProduct(prev => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    console.log(id, value)
+    setProduct(prev => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  const updateCover = (files: File) => {
+    setCoverFile(files);
+  }
+
+  const updateProductImages = (files: File[]) => {
+    setProductFiles(files)
+
+  }
+
+  const handleImageClick = () => {
+    const imageInput = document.getElementsByClassName('avatar')[0] as HTMLInputElement
+    imageInput.click()
+  }
+
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    updateCover(file as File)
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const dataURL = reader.result;
+        setCover(dataURL as string);
+      };
+    }
+  };
+
+  const handlePublish = () => {
+
+  }
+
+  return (
+    <>
+      <Header />
+      <Flex
+        w-300
+        p-10
+        my-10
+        mx-auto
+        rounded-10
+        h-full
+        bg-gray-300
+        flex-col
+        items-center
+        gap-10
+      >
+        <Center mb-2 fw-800 fontSize={'3xl'}>发布商品</Center>
+        <Flex
+          w-130
+          justify-start
+          items-center
+          gap-2
+        >
+          <label w-28 min-w-28 font-800 >cover</label>
+          <Flex
+            gap-2
+            justify-center
+            items-center
+          >
+            <Input
+              className='avatar'
+              type='file'
+              hidden={true}
+              onChange={handleCoverChange}
+            />
+            <Button
+              bg={"yellow.300"}
+              _hover={{
+                bg: "yellow.500"
+              }}
+              onClick={handleImageClick}
+            >上传封面</Button>
+            {cover && <Image w-20 h-20 objectFit={"cover"} rounded={"5px"} src={cover} />}
+          </Flex>
+
+        </Flex>
+
+        <Flex
+          w-100
+          justify-center
+          items-center
+          gap-5
+          flex-col
+        >
+          <ProfileInput title='name' id='name' type='text' placeHolder='input product name' value={product.name} onChange={handleInputChange} />
+          <ProfileInput title='price' id='price' type='number' placeHolder='input product price' value={product.price} onChange={handleInputChange} />
+        </Flex>
+
+        <Flex
+          gap-5>
+          <label htmlFor="description" font-800>description</label>
+          <Textarea id='description' defaultValue={product.description} onChange={handleAreaChange} width={"400px"} placeholder='introduce yourself...' />
+        </Flex>
+
+        <Flex
+          gap-13>
+          <label htmlFor="categoryId" font-800>category</label>
+          <Select id='categoryId' onChange={handleSelectionChange} value={Number(product.categoryId)} placeholder='please select your category' width={"400px"}>
+            {
+              Object.entries(productTagMap).map(([key, value]) => (
+                <option key={key} value={key}>{mapEngTagToChn[value]}</option>
+              ))
+            }
+          </Select>
+        </Flex>
+
+        <Flex
+          w-130
+          justify-start
+          items-center
+          gap-4
+        >
+          <label min-w-28 font-800 >productImages</label>
+          <FileUpload updateUpload={updateProductImages} maxFiles={5} title='产品预览图' />
+        </Flex>
+        <Box>
+          <Button
+            minW={"30px"}
+            bg={"red.300"}
+            _hover={{
+              bg: "red.500"
+            }}
+            onClick={handlePublish}
+          >发布</Button>
+        </Box>
+      </Flex >
+
+      <Footer />
+    </>
+  )
+}
+
+export default Publish;
+
+

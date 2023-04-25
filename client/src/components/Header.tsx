@@ -141,6 +141,7 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
             <MenuList>
               <Link to={"/profile"}> <MenuItem><span text-black>Profile</span></MenuItem></Link>
               <Link to={"/follower/" + currentUser.id}> <MenuItem><span text-black>Follower</span></MenuItem></Link>
+              <Link to={"/publish"}> <MenuItem><span text-black>Publish</span></MenuItem></Link>
               <MenuItem onClick={handleLogout}><span text-black>Logout</span></MenuItem>
             </MenuList>
           </Menu>
