@@ -7,7 +7,7 @@ export type Product = {
   categoryId: number,
   cover: string,
   status: number,
-  imageUrls: string[],
+  imageUrls: string,
   name: string,
 }
 

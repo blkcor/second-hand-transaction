@@ -27,6 +27,15 @@ const ProductItem: React.FC<CollectionItemProps> = ({ product }) => {
   const handleEdit = () => {
     navigate("/edit/" + product.id)
   }
+
+  const handleDelete = async () => {
+    //删除商品信息
+    axios.delete(`/products/${product.id}`)
+    //删除购物车信息
+    axios.delete(`/carts/${product.id}`)
+    window.location.reload()
+    //TODO:alert 删除成功
+  }
   return (
     <>
       <Tr>
@@ -42,13 +51,24 @@ const ProductItem: React.FC<CollectionItemProps> = ({ product }) => {
         }</Td>
         <Td>{product.price}</Td>
 
-        <Td><Button
-          bg={"green.400"}
-          _hover={{
-            bg: "green.600"
-          }}
-          onClick={handleEdit}
-        >编辑</Button></Td>
+        <Td>
+          <Button
+            bg={"green.400"}
+            _hover={{
+              bg: "green.600"
+            }}
+            onClick={handleEdit}
+            mr-2
+          >编辑</Button>
+          <Button
+            bg={"red.400"}
+            _hover={{
+              bg: "red.600"
+            }}
+            onClick={handleDelete}
+          >删除</Button>
+
+        </Td>
       </Tr >
     </>
   )

@@ -1,5 +1,5 @@
 import express from 'express'
-import { getProducts, getDetail, publishproduct, deleteproduct, getAllProducts, getProductsByIds, searchProduct } from '../controller/products.js'
+import { getProducts, getDetail, publishproduct, deleteproduct, getAllProducts, updateProduct, getProductsByIds, searchProduct } from '../controller/products.js'
 const router = express.Router()
 
 router.post('/', publishproduct)
@@ -10,6 +10,8 @@ router.get('/getAllproducts', getAllProducts)
 router.get('/search/:keyword', searchProduct)
 router.get('/:id', getDetail)
 router.delete('/:id', deleteproduct)
+//修改商品信息
+router.put('/:id', updateProduct)
 
 
 

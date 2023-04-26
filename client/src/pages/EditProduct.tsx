@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import FileUpload from '../components/FileUpload';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Box, Button, Center, Flex, Image, Input, Select, Textarea } from '@chakra-ui/react';
+import { Flex, Center, Input, Button, Textarea, Select, Box, Image } from '@chakra-ui/react';
+import FileUpload from '../components/FileUpload';
 import ProfileInput from '../components/ProfileInput';
-import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
-import moment from 'moment';
+import { productTagMap, mapEngTagToChn, Product } from '../types/Product';
 import axios from '../axios';
-import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
-type PublishProps = {
+type EditProductProps = {
 
 };
 
-const Publish: React.FC<PublishProps> = () => {
+const EditProduct: React.FC<EditProductProps> = () => {
   const [product, setProduct] = useState<Product>({
     id: 0,
     description: '',
@@ -26,6 +26,35 @@ const Publish: React.FC<PublishProps> = () => {
     imageUrls: '',
     name: '',
   })
+  const productId = useLocation().pathname.split('/')[2]
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(`/products/${productId}`)
+      setProduct({
+        id: result.data.id,
+        description: result.data.description,
+        price: result.data.price,
+        publishTime: moment(result.data.publish_time).format("YYYY-MM-DD"),
+        sellerId: result.data.seller_id,
+        categoryId: result.data.category_id,
+        cover: result.data.cover,
+        status: result.data.status,
+        imageUrls: result.data.image_urls,
+        name: result.data.name,
+      })
+
+      const imageUrls = Object.assign('', result.data.image_urls)
+      setCover("/upload/" + result.data.cover)
+      const coverFile = new File([result.data.cover], result.data.cover, { type: "image/png" })
+      setCoverFile(coverFile)
+      const productFiles = imageUrls.join("").split(",").map((url: string) => {
+        const file = new File([url], url, { type: "image/png" })
+        return file
+      })
+      setProductFiles(productFiles)
+    }
+    fetchData()
+  }, [])
   const navigate = useNavigate()
   const [productFiles, setProductFiles] = useState<File[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -82,6 +111,7 @@ const Publish: React.FC<PublishProps> = () => {
   };
 
   const handlePublish = async () => {
+
     const formData = new FormData();
     const formData2 = new FormData();
     try {
@@ -92,17 +122,19 @@ const Publish: React.FC<PublishProps> = () => {
       })
       const res = await axios.post("/upload", formData);
       const result = await axios.post("/uploads", formData2);
-      setProduct(prev => ({
-        ...prev,
-        imageUrls: result.data.join(","),
-        cover: res.data
-      }))
-
-      const proRe = await axios.post('/products', product)
-      if (proRe.status === 200) {
-        alert('发布成功')
-        navigate('/')
-      }
+      setProduct(prev => {
+        return {
+          ...prev,
+          cover: res.data,
+          imageUrls: result.data.join(",")
+        }
+      })
+      console.log(product)
+      // const proRe = await axios.post('/products', product)
+      // if (proRe.status === 200) {
+      //   alert('发布成功')
+      //   navigate('/')
+      // }
 
     } catch (err) {
       console.log(err)
@@ -124,7 +156,7 @@ const Publish: React.FC<PublishProps> = () => {
         items-center
         gap-10
       >
-        <Center mb-2 fw-800 fontSize={'3xl'}>发布商品</Center>
+        <Center mb-2 fw-800 fontSize={'3xl'}>编辑商品</Center>
         <Flex
           w-130
           justify-start
@@ -150,7 +182,9 @@ const Publish: React.FC<PublishProps> = () => {
               }}
               onClick={handleImageClick}
             >上传封面</Button>
-            {cover && <Image w-20 h-20 objectFit={"cover"} rounded={"5px"} src={cover} />}
+            {cover && (
+              <Image w-20 h-20 objectFit={"cover"} rounded={"5px"} src={cover} />
+            )}
           </Flex>
 
         </Flex>
@@ -191,7 +225,11 @@ const Publish: React.FC<PublishProps> = () => {
           gap-4
         >
           <label min-w-28 font-800 >productImages</label>
-          <FileUpload updateUpload={updateProductImages} maxFiles={5} title='产品预览图' />
+
+          <FileUpload
+            imageUrls={product.imageUrls}
+            updateUpload={updateProductImages}
+            maxFiles={5} title='产品预览图' />
         </Flex>
         <Box>
           <Button
@@ -201,15 +239,11 @@ const Publish: React.FC<PublishProps> = () => {
               bg: "red.500"
             }}
             onClick={handlePublish}
-          >发布</Button>
+          >保存</Button>
         </Box>
       </Flex >
-
       <Footer />
     </>
   )
 }
-
-export default Publish;
-
-
+export default EditProduct;

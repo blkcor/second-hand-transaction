@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Box, Center, Table, TableCaption, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
-import CollectionItem from '../components/CollectionItem';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { Product } from '../types/Product';
 import axios from '../axios';
-import ProductItem from '../components/productItem';
+import ProductItem from '../components/ProductItem';
 
 type ProductsProps = {
 
@@ -64,19 +63,21 @@ const Products: React.FC<ProductsProps> = () => {
                 <Th>操作</Th>
               </Tr>
             </Thead>
-            {products.length === 0 ?
-              <Center position={"relative"} left-60 my-2 text-6 text-rose><Link to={"/publish"}>看起来空荡荡的，快点去发布一点东西吧~</Link></Center>
-              :
-              <Tbody>
-                {products.map(product => {
-                  return (
-                    <ProductItem key={product.id} product={product} />
-                  )
-                })}
-              </Tbody>
-            }
+
+
+            <Tbody>
+              {products.map(product => {
+                return (
+                  <ProductItem key={product.id} product={product} />
+                )
+              })}
+            </Tbody>
+
           </Table>
         </TableContainer>
+        {products.length === 0 ?
+          <Center position={"relative"} left-60 my-2 text-6 text-rose><Link to={"/publish"}>看起来空荡荡的，快点去发布一点东西吧~</Link></Center>
+          : null}
       </Box >
       <Footer />
     </>

@@ -6,7 +6,7 @@ import cartAtom from '../atoms/cartsAtom';
 import axios from '../axios';
 import { Product } from '../types/Product';
 import moment from 'moment';
-import { Box, Button, Center, Table, TableCaption, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, Center, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import CartItem from '../components/CartItem';
 
 type ShoppingsProps = {
@@ -40,22 +40,24 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
       const params = {
         ids: cartState[0].productIds
       }
-      const productsInfo = await axios.get("/products/getByIds", { params })
-      setProducts(productsInfo.data.map((product: any) => {
-        return {
-          ...product,
-          id: product.id,
-          description: product.description,
-          price: product.price,
-          publishTime: moment(product['publish_time']).format("YYYY-MM-DD"),
-          sellerId: product['seller_id'],
-          categoryId: product['category_id'],
-          cover: product.cover,
-          status: product.status,
-          imageUrls: product['image_urls'],
-          name: product.name,
-        }
-      }))
+      if (cartState[0].productIds && cartState[0].productIds?.length > 0) {
+        const productsInfo = await axios.get("/products/getByIds", { params })
+        setProducts(productsInfo.data.map((product: any) => {
+          return {
+            ...product,
+            id: product.id,
+            description: product.description,
+            price: product.price,
+            publishTime: moment(product['publish_time']).format("YYYY-MM-DD"),
+            sellerId: product['seller_id'],
+            categoryId: product['category_id'],
+            cover: product.cover,
+            status: product.status,
+            imageUrls: product['image_urls'],
+            name: product.name,
+          }
+        }))
+      }
     }
     handleFetch()
   }, [checkedProductIds])
@@ -99,19 +101,20 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
                 <Th>操作</Th>
               </Tr>
             </Thead>
-            {products.length === 0 ?
-              <Center position={"relative"} left-110 my-2 text-6 text-rose>购物车空荡荡的~~~</Center>
-              :
-              <Tbody>
-                {products.map(product => {
-                  return (
-                    <CartItem key={product.id} product={product} addCheckedProduct={addCheckedProduct} removeCheckedProduct={removeCheckedProduct} />
-                  )
-                })}
-              </Tbody>
-            }
+
+            <Tbody>
+              {products.map(product => {
+                return (
+                  <CartItem key={product.id} product={product} addCheckedProduct={addCheckedProduct} removeCheckedProduct={removeCheckedProduct} />
+                )
+              })}
+            </Tbody>
           </Table>
         </TableContainer>
+        {
+          products.length === 0 ?
+            <Center my-2 text-6 text-rose>购物车空荡荡的~~~</Center> : null
+        }
       </Box >
       <Footer />
     </>

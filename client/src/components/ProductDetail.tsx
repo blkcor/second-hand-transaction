@@ -74,7 +74,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
             sellerId: productRes.data['seller_id'],
             categoryId: productRes.data['category_id'],
             status: productRes.data.status,
-            imageUrls: productRes.data['image_urls'].split(','),
+            imageUrls: productRes.data['image_urls'],
           });
         } catch (err) {
           console.log(err);
@@ -206,10 +206,10 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
         >
           <Box boxSizing='border-box'>
 
-            <Image className='main-pic' w-110 h-110 src={'/upload/' + productInfo?.imageUrls[currentImage]} rounded-2 objectFit={'cover'} />
+            <Image className='main-pic' w-110 h-110 src={'/upload/' + productInfo?.imageUrls.split(",")[currentImage]} rounded-2 objectFit={'cover'} />
             <Flex className='pre-pics' justify-between mt-2 >
               {
-                productInfo?.imageUrls
+                productInfo?.imageUrls?.split(",")
                   .map((image, index) =>
                     <Image
                       key={index}

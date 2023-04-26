@@ -1,16 +1,19 @@
 import { VStack, Button, HStack, Box, Image } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FileUploadProps = {
   updateUpload: (files: File[]) => void;
   maxFiles: number;
-  title: string
+  title: string,
+  imageUrls?: string
 };
 
-const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title, imageUrls }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-
+  useEffect(() => {
+    setPreviewUrls(imageUrls?.split(',').map(item => "/upload/" + item) as string[])
+  }, [imageUrls])
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files).slice(0, maxFiles);
@@ -49,13 +52,16 @@ const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title }
       </Button>
       <HStack spacing={2}>
 
-        {previewUrls.map((url, index) => (
-          <Box key={index} width="100px" height="100px" overflow="hidden">
-            <Image w-20 h-20 rounded={"7px"} src={url} alt={`预览 ${index}`} objectFit="cover" />
-          </Box>
-        ))}
+        {
+          previewUrls.length > 0 ?
+            previewUrls.map((url, index) => (
+              <Box key={index} width="100px" height="100px" overflow="hidden">
+                <Image w-20 h-20 rounded={"7px"} src={url} alt={`预览 ${index}`} objectFit="cover" />
+              </Box>
+            )) : null
+        }
       </HStack>
-    </VStack>
+    </VStack >
   );
 };
 

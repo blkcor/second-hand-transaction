@@ -17,6 +17,7 @@ import cartAtom from "./atoms/cartsAtom"
 import axios from "./axios"
 import Publish from "./pages/Publish"
 import Products from "./pages/Products"
+import EditProduct from "./pages/EditProduct"
 
 function App() {
   const navigate = useNavigate()
@@ -33,6 +34,8 @@ function App() {
             productIds: productIds,
           }
           localStorage.setItem("carts", JSON.stringify(cart))
+        } else {
+          localStorage.setItem("carts", JSON.stringify([]))
         }
       } catch (err) {
         console.log(err)
@@ -65,6 +68,7 @@ function App() {
       <Route path="/shoppings" element={<Shoppings />} />
       <Route path="/publish" element={<Publish />} />
       <Route path="/products" element={<Products />} />
+      <Route path="/edit/:productId" element={<EditProduct />} />
     </Routes>
   )
 }
