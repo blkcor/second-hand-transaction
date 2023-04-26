@@ -129,7 +129,7 @@ export const updateProduct = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
     const { id } = req.params
-    const { name, description, price, categoryId, status, imageUrls, cover } = req.body
+    const { name, description, price, categoryId, imageUrls, cover } = req.body
     const q = "UPDATE products SET name = ?, description = ?, price = ?, category_id = ? , image_urls = ?, cover = ? WHERE id = ?"
     db.query(q, [name, description, price, categoryId, imageUrls, cover, id], (err, result) => {
       if (err) return res.status(500).json(err)

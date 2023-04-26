@@ -5,15 +5,12 @@ type FileUploadProps = {
   updateUpload: (files: File[]) => void;
   maxFiles: number;
   title: string,
-  imageUrls?: string
 };
 
-const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title, imageUrls }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title, }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  useEffect(() => {
-    setPreviewUrls(imageUrls?.split(',').map(item => "/upload/" + item) as string[])
-  }, [imageUrls])
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files).slice(0, maxFiles);
@@ -51,7 +48,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ updateUpload, maxFiles, title, 
         选择{title}
       </Button>
       <HStack spacing={2}>
-
         {
           previewUrls.length > 0 ?
             previewUrls.map((url, index) => (

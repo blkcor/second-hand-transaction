@@ -14,6 +14,8 @@ type EditProductProps = {
 };
 
 const EditProduct: React.FC<EditProductProps> = () => {
+  const productId = useLocation().pathname.split('/')[2]
+  const [isReadyToSave, setIsReadyToSave] = useState<boolean>(false)
   const [product, setProduct] = useState<Product>({
     id: 0,
     description: '',
@@ -26,7 +28,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
     imageUrls: '',
     name: '',
   })
-  const productId = useLocation().pathname.split('/')[2]
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`/products/${productId}`)
@@ -42,19 +44,23 @@ const EditProduct: React.FC<EditProductProps> = () => {
         imageUrls: result.data.image_urls,
         name: result.data.name,
       })
-
-      const imageUrls = Object.assign('', result.data.image_urls)
-      setCover("/upload/" + result.data.cover)
-      const coverFile = new File([result.data.cover], result.data.cover, { type: "image/png" })
-      setCoverFile(coverFile)
-      const productFiles = imageUrls.join("").split(",").map((url: string) => {
-        const file = new File([url], url, { type: "image/png" })
-        return file
-      })
-      setProductFiles(productFiles)
     }
     fetchData()
   }, [])
+
+  useEffect(() => {
+    if (isReadyToSave) {
+      const handleSave = async () => {
+        const proRe = await axios.put('/products/' + product.id, product)
+        console.log(proRe)
+        if (proRe.status === 200) {
+          alert('发布成功')
+          navigate('/')
+        }
+      }
+      handleSave()
+    }
+  }, [isReadyToSave])
   const navigate = useNavigate()
   const [productFiles, setProductFiles] = useState<File[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -110,7 +116,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
     }
   };
 
-  const handlePublish = async () => {
+  const handleSave = async () => {
 
     const formData = new FormData();
     const formData2 = new FormData();
@@ -122,19 +128,12 @@ const EditProduct: React.FC<EditProductProps> = () => {
       })
       const res = await axios.post("/upload", formData);
       const result = await axios.post("/uploads", formData2);
-      setProduct(prev => {
-        return {
-          ...prev,
-          cover: res.data,
-          imageUrls: result.data.join(",")
-        }
-      })
-      console.log(product)
-      // const proRe = await axios.post('/products', product)
-      // if (proRe.status === 200) {
-      //   alert('发布成功')
-      //   navigate('/')
-      // }
+      setProduct(prev => ({
+        ...prev,
+        imageUrls: result.data.join(","),
+        cover: res.data
+      }))
+      setIsReadyToSave(true)
 
     } catch (err) {
       console.log(err)
@@ -225,9 +224,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
           gap-4
         >
           <label min-w-28 font-800 >productImages</label>
-
           <FileUpload
-            imageUrls={product.imageUrls}
             updateUpload={updateProductImages}
             maxFiles={5} title='产品预览图' />
         </Flex>
@@ -238,7 +235,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
             _hover={{
               bg: "red.500"
             }}
-            onClick={handlePublish}
+            onClick={handleSave}
           >保存</Button>
         </Box>
       </Flex >

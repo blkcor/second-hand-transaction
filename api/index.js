@@ -48,6 +48,7 @@ app.use('/api/carts', shoppingRouter)
 //single file upload
 app.use('/api/upload', upload.single('file'), (req, res) => {
   const file = req.file
+  console.log(file)
   res.status(200).json(file.filename)
 })
 

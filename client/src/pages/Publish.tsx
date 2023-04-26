@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FileUpload from '../components/FileUpload';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Box, Button, Center, Flex, Image, Input, Select, Textarea } from '@chakra-ui/react';
 import ProfileInput from '../components/ProfileInput';
-import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
+import { Product, mapEngTagToChn, productTagMap } from '../types/Product';
 import moment from 'moment';
 import axios from '../axios';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,23 @@ const Publish: React.FC<PublishProps> = () => {
     imageUrls: '',
     name: '',
   })
+  const [isReadyToPublish, setIsReadyToPublish] = useState(false);
+  useEffect(() => {
+    if (isReadyToPublish) {
+      const publishProduct = async () => {
+        try {
+          const proRe = await axios.post('/products', product);
+          if (proRe.status === 200) {
+            alert('发布成功');
+            navigate('/');
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      publishProduct();
+    }
+  }, [isReadyToPublish]);
   const navigate = useNavigate()
   const [productFiles, setProductFiles] = useState<File[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -85,29 +102,23 @@ const Publish: React.FC<PublishProps> = () => {
     const formData = new FormData();
     const formData2 = new FormData();
     try {
-      //upload cover
+      // 上传封面
       formData.append("file", coverFile as File);
       productFiles.forEach(file => {
         formData2.append("files", file);
-      })
+      });
       const res = await axios.post("/upload", formData);
       const result = await axios.post("/uploads", formData2);
       setProduct(prev => ({
         ...prev,
+        cover: res.data,
         imageUrls: result.data.join(","),
-        cover: res.data
-      }))
-
-      const proRe = await axios.post('/products', product)
-      if (proRe.status === 200) {
-        alert('发布成功')
-        navigate('/')
-      }
-
+      }));
+      setIsReadyToPublish(true);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <>
@@ -203,8 +214,7 @@ const Publish: React.FC<PublishProps> = () => {
             onClick={handlePublish}
           >发布</Button>
         </Box>
-      </Flex >
-
+      </Flex>
       <Footer />
     </>
   )
