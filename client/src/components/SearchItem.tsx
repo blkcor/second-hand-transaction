@@ -21,7 +21,7 @@ const SearchItem: React.FC<SearchItemProps> = ({ content }) => {
         cursor: "pointer"
       }}
     >
-      <Image src={"/upload/" + content.cover} rounded-2 objectFit={'cover'} />
+      <Image w={"260px"} h={"146px"} src={"/upload/" + content.cover} rounded-2 objectFit={'cover'} />
       <Center>
         <span fw-600>{content.name}</span>
       </Center>

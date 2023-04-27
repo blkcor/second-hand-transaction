@@ -76,7 +76,10 @@ const Products: React.FC<ProductsProps> = () => {
           </Table>
         </TableContainer>
         {products.length === 0 ?
-          <Center position={"relative"} left-60 my-2 text-6 text-rose><Link to={"/publish"}>看起来空荡荡的，快点去发布一点东西吧~</Link></Center>
+          <Center my-2 text-6 text-rose
+            _hover={{
+              color: "red.600"
+            }}><Link to={"/publish"}>看起来空荡荡的，快点去发布一点东西吧~</Link></Center>
           : null}
       </Box >
       <Footer />

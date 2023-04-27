@@ -137,3 +137,13 @@ export const updateProduct = (req, res) => {
     })
   })
 }
+
+
+export const getByUserId = (req, res) => {
+  const { userId } = req.params
+  const q = "SELECT * FROM products WHERE seller_id = ?"
+  db.query(q, [userId], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json(result)
+  })
+}

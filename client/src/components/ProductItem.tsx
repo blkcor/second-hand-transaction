@@ -6,11 +6,12 @@ import { Seller } from '../types/Seller';
 import axios from '../axios';
 
 type CollectionItemProps = {
-  product: Product
+  product: Product,
+  userProfile?: boolean
 };
 
 
-const ProductItem: React.FC<CollectionItemProps> = ({ product }) => {
+const ProductItem: React.FC<CollectionItemProps> = ({ product, userProfile }) => {
   const [sellerInfo, setSellerInfo] = useState<Seller>()
   useEffect(() => {
     const handleFetch = async () => {
@@ -51,24 +52,27 @@ const ProductItem: React.FC<CollectionItemProps> = ({ product }) => {
         }</Td>
         <Td>{product.price}</Td>
 
-        <Td>
-          <Button
-            bg={"green.400"}
-            _hover={{
-              bg: "green.600"
-            }}
-            onClick={handleEdit}
-            mr-2
-          >编辑</Button>
-          <Button
-            bg={"red.400"}
-            _hover={{
-              bg: "red.600"
-            }}
-            onClick={handleDelete}
-          >删除</Button>
+        {
+          !userProfile &&
+          <Td>
+            <Button
+              bg={"green.400"}
+              _hover={{
+                bg: "green.600"
+              }}
+              onClick={handleEdit}
+              mr-2
+            >编辑</Button>
+            <Button
+              bg={"red.400"}
+              _hover={{
+                bg: "red.600"
+              }}
+              onClick={handleDelete}
+            >删除</Button>
 
-        </Td>
+          </Td>
+        }
       </Tr >
     </>
   )
