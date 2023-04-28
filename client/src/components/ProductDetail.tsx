@@ -250,7 +250,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
         >
           <Box boxSizing='border-box'>
             <Image className='main-pic' w-110 h-110 src={'/upload/' + productInfo?.imageUrls.split(",")[currentImage]} rounded-2 objectFit={'cover'} />
-            <Flex className='pre-pics' justify-between mt-2 >
+            <Flex className='pre-pics' justify-start mt-2 gap-2 >
               {
                 productInfo?.imageUrls?.split(",")
                   .map((image, index) =>
