@@ -6,6 +6,7 @@ import productRouter from './routers/products.js'
 import collectionRouter from './routers/collections.js'
 import followsRouter from './routers/follows.js'
 import shoppingRouter from './routers/shopping.js'
+import commentsRouter from './routers/comments.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import multer from 'multer'
@@ -45,6 +46,7 @@ app.use('/api/products', productRouter)
 app.use('/api/collections', collectionRouter)
 app.use('/api/follows', followsRouter)
 app.use('/api/carts', shoppingRouter)
+app.use('/api/comments', commentsRouter)
 //single file upload
 app.use('/api/upload', upload.single('file'), (req, res) => {
   const file = req.file
