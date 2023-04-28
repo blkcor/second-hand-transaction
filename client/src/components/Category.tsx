@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 type CategoryProps = {
-  activeItem: string
+  activeItem: string | undefined
 };
 
 const Category: React.FC<CategoryProps> = ({ activeItem }) => {

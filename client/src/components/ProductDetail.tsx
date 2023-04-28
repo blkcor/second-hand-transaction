@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { Box, Button, Flex, Heading, Image } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Heading, Image, Input } from '@chakra-ui/react';
 import {
   Product,
   productTagMap,
   productTagColorMap,
   mapEngTagToChn
 } from '../types/Product';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 import moment from 'moment';
 import { User } from '../types/User';
@@ -16,6 +16,8 @@ import { AxiosResponse } from 'axios';
 import { Seller } from '../types/Seller';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import cartAtom, { cartState, defaultCartAtom } from '../atoms/cartsAtom';
+import Comments from './Comments';
+import { Comment } from '../types/Comment';
 type ProductDetailProps = {
 
 };
@@ -30,6 +32,9 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const [following, setFollowing] = useState<boolean>()
   const [isSelf, setIsSelf] = useState<boolean>()
   const [added, setAdded] = useState<boolean>()
+  const [comment, setComment] = useState<string>()
+  const [comments, setComments] = useState<Comment[]>()
+  const navigate = useNavigate()
   //购物车信息
   const cartState = useRecoilState(cartAtom);
   function updateCart(newCart: cartState) {
@@ -54,9 +59,22 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           const sellerRes = await axios.get(`/users/find/${productRes.data['seller_id']}`);
           //获取关注信息 
           const followedUserIds = await axios.get(`/follows/following`);
+          //获取商品评论信息
+          const commentsResult = await axios.get(`/comments/${productId}`)
           //设置是否是自己
           setIsSelf(sellerRes.data.id === (JSON.parse(localStorage.getItem('currentUser') as string) as User).id)
           setFollowing(followedUserIds.data.some((user: any) => user.followed_id === sellerRes.data.id))
+
+          setComments(commentsResult.data.map((comment: any) => {
+            return {
+              id: comment.id,
+              content: comment.content,
+              commentBy: comment.comment_by,
+              reviewBy: comment.review_by,
+              productId: comment.product_id,
+              commentTime: moment(comment['comment_time']).format("YYYY-MM-DD"),
+            }
+          }))
 
           setSellerInfo({
             id: sellerRes.data.id,
@@ -130,6 +148,26 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
       setAdded(true)
     }
   }
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value)
+
+  }
+
+  const handleComment = async () => {
+    const params = {
+      content: comment,
+      productId: productId,
+      commentBy: (JSON.parse(localStorage.getItem('currentUser') as string) as User).id,
+      reviewBy: sellerInfo?.id
+    }
+    const result = await axios.post("/comments", params)
+    if (result.status === 200) {
+      setComment("")
+      window.location.reload()
+
+    }
+  }
   return (
     <>
       <Header />
@@ -193,9 +231,15 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
             ><Link to={isSelf ? `/profile` : `/user/${sellerInfo?.id}`}><i text-zinc-600 mt="0.5px" mr-1 i-carbon-home />主页</Link></Button>
           </Box>
         </Flex>
+        <Heading
+          mx-auto
+          w-80vw
+          mt-10
+          pl-4
+        >商品信息:</Heading>
         <Flex
           className='product-detail'
-          mt-15
+          mt-2
           w-80vw
           mx-auto
           px-4
@@ -205,7 +249,6 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
           gap-2
         >
           <Box boxSizing='border-box'>
-
             <Image className='main-pic' w-110 h-110 src={'/upload/' + productInfo?.imageUrls.split(",")[currentImage]} rounded-2 objectFit={'cover'} />
             <Flex className='pre-pics' justify-between mt-2 >
               {
@@ -298,9 +341,6 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 text-white
                 onClick={handleAddShopping}
               ><i mr-2 i-carbon-shopping-cart />加入购物车</Button>
-
-
-
               }
               <Button
                 text-white
@@ -309,10 +349,60 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                   bg: "rgba(22, 163, 74,0.8)"
                 }}
               ><i mr-2 i-carbon-money />购买</Button>
-
             </Flex>
-
           </Flex>
+
+        </Flex>
+        <Heading
+          mx-auto
+          w-80vw
+          mt-10
+          pl-4
+        >商品评论:</Heading>
+        <Flex
+          mt-3
+          justify-center
+          className='comment'
+          flexDirection={"column"}
+          w-80vw
+          mx-auto
+          bg-gray-200
+          p-5
+          rounded={"10px"}
+        >
+          <Flex
+            gap-2
+          >
+            {
+              isSelf ? <Link to={"/profile"}>
+                <Image
+                  w-10
+                  h-10
+                  rounded={"5px"}
+                  src={"/upload/" + sellerInfo?.avatar}
+                  objectFit={"cover"}
+                />
+              </Link> :
+                <Link to={`/user/${sellerInfo?.id}`}>
+                  <Image
+                    w-10
+                    h-10
+                    rounded={"5px"}
+                    src={"/upload/" + sellerInfo?.avatar} />
+                </Link>
+            }
+            <Input
+              borderColor={"green.400"}
+              focusBorderColor={"green.500"}
+              type='text' placeholder="评论一点什么吧~~~~"
+              onChange={handleCommentChange}
+              value={comment}
+            />
+            <Button
+              colorScheme='green'
+              onClick={handleComment}>发送</Button>
+          </Flex>
+          <Comments comments={comments} />
         </Flex>
       </Flex >
       <Footer />

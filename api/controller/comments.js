@@ -1,3 +1,6 @@
+import { db } from "../config/db.js";
+import jwt from 'jsonwebtoken'
+import moment from "moment";
 //getComments, createComment, deleteComment
 
 export const getComments = (req, res) => {
@@ -15,10 +18,9 @@ export const createComment = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
 
-    const { content, commentBy, reviewBy, productId } = req.body.content
-
-    const q = "INSERT INTO comments (product_id,comment_by, review_by,content ) VALUES (?, ?, ?, ?)"
-    db.query(q, [productId, commentBy, reviewBy, content], (err, result) => {
+    const { content, commentBy, reviewBy, productId } = req.body
+    const q = "INSERT INTO comments (product_id,comment_by, review_by,content,comment_time ) VALUES (?, ?, ?, ?,?)"
+    db.query(q, [productId, commentBy, reviewBy, content, moment().format("YYYY-MM-DD hh-mm-ss")], (err, result) => {
       if (err) return res.status(500).json(err)
       return res.status(200).json({ message: "Comment successfully" })
     })
