@@ -1,12 +1,14 @@
 import React from 'react';
 import { Product } from '../types/Product';
 import { Box, Center, GridItem, Image } from '@chakra-ui/react';
+import HighLightKeyWords from './HighLightKeyWords';
 
 type SearchItemProps = {
-  content: Product
+  content: Product,
+  searchContent: string
 };
 
-const SearchItem: React.FC<SearchItemProps> = ({ content }) => {
+const SearchItem: React.FC<SearchItemProps> = ({ content, searchContent }) => {
 
   return (
     <GridItem
@@ -23,7 +25,7 @@ const SearchItem: React.FC<SearchItemProps> = ({ content }) => {
     >
       <Image w={"260px"} h={"146px"} src={"/upload/" + content.cover} rounded-2 objectFit={'cover'} />
       <Center>
-        <span fw-600>{content.name}</span>
+        <HighLightKeyWords content={content.name} keyword={searchContent} />
       </Center>
       <Box px-2>
         <span fw-700>到手价：

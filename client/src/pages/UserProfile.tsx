@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import ProfileInput from '../components/ProfileInput';
 import axios from '../axios';
 import moment from 'moment';
-import { Box, Center, Flex, Heading, Image, Radio, RadioGroup, Select, Table, TableCaption, TableContainer, Tbody, Textarea, Th, Thead, Tr, color } from '@chakra-ui/react';
+import { Box, Center, Flex, Image, Radio, RadioGroup, Select, Table, TableCaption, TableContainer, Tbody, Textarea, Th, Thead, Tr, color } from '@chakra-ui/react';
 import ProductItem from '../components/ProductItem';
 import { Product } from '../types/Product';
 
@@ -188,8 +188,6 @@ const UserProfile: React.FC<UserProfileProps> = () => {
                         <Th>商品价格</Th>
                       </Tr>
                     </Thead>
-
-
                     <Tbody>
                       {products.map(product => {
                         return (

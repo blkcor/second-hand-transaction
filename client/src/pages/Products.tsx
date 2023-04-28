@@ -53,7 +53,7 @@ const Products: React.FC<ProductsProps> = () => {
         <Center mb-2 fw-800 fontSize={'3xl'}>我的发布</Center>
         <TableContainer min-h-60vh>
           <Table variant='simple'>
-            <TableCaption>some collections</TableCaption>
+            <TableCaption>some publish</TableCaption>
             <Thead>
               <Tr>
                 <Th>商品名称</Th>

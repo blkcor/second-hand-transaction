@@ -56,8 +56,8 @@ const Search: React.FC<SearchProps> = () => {
         <Grid templateColumns='repeat(4, 2fr)' gap={6}>
           {searchResult?.map((product: Product) => {
             return (
-              <Link to={`/product/${product.id}/${product.categoryId}`}>
-                <SearchItem key={product.id} content={product} />
+              <Link to={`/product/${product.id}/${product.categoryId}`} key={product.id}>
+                <SearchItem key={product.id} content={product} searchContent={searchContent} />
               </Link>
             )
           })
