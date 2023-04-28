@@ -34,6 +34,8 @@ function App() {
             productIds: productIds,
           }
           localStorage.setItem("carts", JSON.stringify(cart))
+          setCartState(cart)
+
         } else {
           localStorage.setItem("carts", JSON.stringify([]))
         }
