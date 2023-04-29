@@ -10,6 +10,7 @@ import commentsRouter from './routers/comments.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import multer from 'multer'
+import "./websocket.js"
 
 
 
@@ -58,6 +59,7 @@ app.use('/api/uploads', upload.array('files'), (req, res) => {
   const files = req.files
   res.status(200).json(files.map(file => file.filename))
 })      //multiple file upload
+
 
 //start
 app.listen(PORT, () => {

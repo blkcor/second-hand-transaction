@@ -223,12 +223,22 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                   <i color='#72A4F9' mt="0.5px" fw-800 mr-1 i-carbon-face-activated-add />关注</Button>
             }
             <Button
+              mr-8
               borderRadius={"10px"}
               bg={"rgba(148, 163, 184, 0.8)"}
               _hover={{
                 bg: "rgba(71, 85, 105, 0.8)"
               }}
             ><Link to={isSelf ? `/profile` : `/user/${sellerInfo?.id}`}><i text-zinc-600 mt="0.5px" mr-1 i-carbon-home />主页</Link></Button>
+            {!isSelf &&
+              <Button
+                borderRadius={"10px"}
+                bg={"rgba(253, 224, 71, 0.8)"}
+                _hover={{
+                  bg: "rgba(202, 138, 4, 0.8)"
+                }}
+              ><Link to={`/chat/${sellerInfo?.id}`}><i text-zinc-600 mt="0.5px" mr-1 i-carbon-chat />联系客服</Link></Button>
+            }
           </Box>
         </Flex>
         <Heading

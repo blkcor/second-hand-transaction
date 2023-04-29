@@ -18,6 +18,7 @@ import axios from "./axios"
 import Publish from "./pages/Publish"
 import Products from "./pages/Products"
 import EditProduct from "./pages/EditProduct"
+import Chat from "./pages/Chat"
 
 function App() {
   const navigate = useNavigate()
@@ -71,6 +72,7 @@ function App() {
       <Route path="/publish" element={<Publish />} />
       <Route path="/products" element={<Products />} />
       <Route path="/edit/:productId" element={<EditProduct />} />
+      <Route path="/chat/:userId" element={<Chat />} />
     </Routes>
   )
 }
