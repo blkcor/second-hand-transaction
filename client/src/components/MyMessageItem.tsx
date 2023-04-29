@@ -2,6 +2,7 @@ import React from 'react';
 import { Message } from '../types/Message';
 import { Box, Flex, Image } from '@chakra-ui/react';
 import { Seller } from '../types/Seller';
+import { Link } from 'react-router-dom';
 
 type MyMessageItemProps = {
   message: Message,
@@ -13,13 +14,15 @@ const MyMessageItem: React.FC<MyMessageItemProps> = ({ message, userInfo }) => {
   return (
     <Flex
       h-5vh
-      bg-red-200
       w-78vw
       flexDirection={"row-reverse"}
       gap-3
       items-center
     >
-      <Image w-10 h-10 src={"/upload/" + userInfo.avatar} />
+      <Link to={`/user/${userInfo.id}`}>
+        <Image w-10 h-10 src={"/upload/" + userInfo.avatar} />
+      </Link>
+
       <Box
         px-2
         bg-white

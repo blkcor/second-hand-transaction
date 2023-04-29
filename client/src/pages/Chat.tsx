@@ -190,10 +190,10 @@ const Chat: React.FC<ChatProps> = () => {
           justify-center
           items-center
           flex={4}
-          w-full
-          p-2
+          w="79vw"
           gap-5
           flexDirection={"column"}
+          style={{ overflowY: 'auto', maxHeight: '500px' }}
         >
 
           {filteredMessage?.[myId as string]?.map((item: Message, index: number) => {
@@ -235,7 +235,7 @@ const Chat: React.FC<ChatProps> = () => {
 
           >send</Button>
         </Flex>
-      </Flex>
+      </Flex >
       <Footer />
     </>
   );

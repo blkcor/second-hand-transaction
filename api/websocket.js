@@ -31,8 +31,6 @@ io.on("connect", (socket) => {
   //send事件
   socket.on('send', ({ fromUserId, message, targetId }) => {
     const targetSocket = io.sockets.sockets.get(targetId)
-    console.log(userList)
-    console.log(targetId)
     const toUser = userList.find(user => user.id === targetId)
 
     targetSocket.emit('receive', {
