@@ -1,7 +1,7 @@
 import express from 'express'
-import { createOp } from '../controller/op.js'
+import { createOp, getOp } from '../controller/op.js'
 
 const router = express.Router()
 router.post("/", createOp)
-
+router.get("/:orderId", getOp)
 export default router

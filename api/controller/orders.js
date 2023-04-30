@@ -31,7 +31,33 @@ export const getOrder = (req, res) => {
   })
 }
 
+export const updateAddress = (req, res) => {
 
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const orderId = req.body.id
+    const q = `UPDATE orders SET address = ? WHERE id = ?`
+    db.query(q, [req.body.address, orderId], (err, result) => {
+      if (err) return res.status(500).json(err)
+      res.status(200).json(result)
+    })
+  })
+}
 
-export const updateOrder = (req, res) => { }
+export const updateOrder = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const orderId = req.body.id
+    const q = `UPDATE orders SET status = ? WHERE id = ?`
+    db.query(q, [req.body.status, orderId], (err, result) => {
+      if (err) return res.status(500).json(err)
+      res.status(200).json(result)
+    })
+  })
+}
+
 export const deleteOrder = (req, res) => { }

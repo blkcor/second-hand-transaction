@@ -102,7 +102,7 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     }
     //设置支付商品的状态为0（锁定）
     axios.put("/products/lock", params2)
-    //从数据库删除
+    //从数据库删除pa
     axios.delete("/carts/carts/removeBatch/", { params: params2 })
     navigate(`/pay/${orderInfo.data.insertId}`)
   }

@@ -14,3 +14,15 @@ export const createOp = (req, res) => {
     })
   })
 }
+
+
+export const getOp = (req, res) => {
+  const { orderId } = req.params
+  const q = `SELECT * FROM order_product WHERE order_id = ?`
+  db.query(q, [orderId], (err, result) => {
+    if (err) return res.status(500).json(err)
+    const productIds = result.map(item => item.product_id)
+    return res.status(200).json(productIds)
+  })
+}
+
