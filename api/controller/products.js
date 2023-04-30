@@ -69,7 +69,7 @@ export const deleteproduct = (req, res) => {
 export const getProductsByIds = (req, res) => {
   const { ids } = req.query
   if (!ids) return res.status(400).json('ids is required!')
-  const q = 'SELECT * FROM products WHERE id IN (?)';
+  const q = 'SELECT * FROM products WHERE id IN (?) AND status = 1';
   db.query(q, [ids], (err, result) => {
     if (err) return res.status(500).json(err)
     return res.status(200).json(result)
@@ -86,7 +86,7 @@ const getproductsByType = (categoryId, pageSize, offset, res) => {
 }
 
 const getAllproducts = (pageSize, offset, res) => {
-  const q = 'SELECT * FROM products LIMIT ? OFFSET ?';
+  const q = 'SELECT * FROM products LIMIT ? OFFSET ? AND status = 1';
   db.query(q, [pageSize, offset], (err, result) => {
     if (err) return res.status(500).json(err)
     return res.status(200).json(result)
@@ -100,7 +100,7 @@ export const searchProduct = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
     const { keyword } = req.params
-    const q = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?)"
+    const q = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?) AND status = 1"
     db.query(q, [`%${keyword.toLowerCase()}%`], (err, result) => {
       if (err) return res.status(500).json(err)
       return res.status(200).json(result)
@@ -145,5 +145,15 @@ export const getByUserId = (req, res) => {
   db.query(q, [userId], (err, result) => {
     if (err) return res.status(500).json(err)
     return res.status(200).json(result)
+  })
+}
+
+
+export const lockProduct = (req, res) => {
+  const { ids } = req.body
+  const q = "UPDATE products SET status = 0 WHERE id in (?)"
+  db.query(q, [ids], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json({ message: "products locked" })
   })
 }

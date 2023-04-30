@@ -46,3 +46,19 @@ export const removeCart = (req, res) => {
     })
   })
 }
+
+
+export const removeBatch = (req, res) => {
+  const { ids } = req.query
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not login!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    const q = `DELETE FROM shoppings WHERE product_id IN (${ids}) AND user_id = ?`;
+    db.query(q, [userInfo.id], (err, result) => {
+      if (err) return res.status(500).json(err)
+      if (result.affectedRows > 0) return res.status(200).json({ message: "Removed from cart" })
+      else return res.status(201).json({ message: "No cart" })
+    })
+  })
+}

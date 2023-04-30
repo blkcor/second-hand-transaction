@@ -7,10 +7,14 @@ import collectionRouter from './routers/collections.js'
 import followsRouter from './routers/follows.js'
 import shoppingRouter from './routers/shopping.js'
 import commentsRouter from './routers/comments.js'
+import ordersRouter from './routers/orders.js'
+import opRouter from './routers/op.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import multer from 'multer'
 import "./websocket.js"
+import { alipaySdk, AlipayFormData } from './pay.cjs'
+
 
 
 
@@ -48,6 +52,8 @@ app.use('/api/collections', collectionRouter)
 app.use('/api/follows', followsRouter)
 app.use('/api/carts', shoppingRouter)
 app.use('/api/comments', commentsRouter)
+app.use('/api/orders', ordersRouter)
+app.use('/api/op', opRouter)
 //single file upload
 app.use('/api/upload', upload.single('file'), (req, res) => {
   const file = req.file

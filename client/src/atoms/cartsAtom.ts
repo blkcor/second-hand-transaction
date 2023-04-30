@@ -11,10 +11,6 @@ const cartAtom = atom<cartState>({
   key: 'cartState',
   default: defaultCartAtom
 })
-//TODO:支付
-//TODO:ws聊天（私聊）
-//TODO：商品页面添加评论模块
-
 export default cartAtom
 
 

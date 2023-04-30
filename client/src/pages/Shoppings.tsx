@@ -8,6 +8,8 @@ import { Product } from '../types/Product';
 import moment from 'moment';
 import { Box, Button, Center, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import CartItem from '../components/CartItem';
+import { Order } from '../types/Order';
+import { useNavigate } from 'react-router-dom';
 
 type ShoppingsProps = {
 
@@ -17,13 +19,14 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [checkedProductIds, setCheckedProductIds] = useState<number[]>([])
   const [total, setTotal] = useState<number>(0)
+  const navigate = useNavigate()
   const addCheckedProduct = (productId: number) => {
     setCheckedProductIds([...checkedProductIds, productId])
   }
   const removeCheckedProduct = (productId: number) => {
     setCheckedProductIds(checkedProductIds.filter(id => id !== productId))
   }
-  const cartState = useRecoilState(cartAtom)
+  const [cartState, setCartState] = useRecoilState(cartAtom)
   useEffect(() => {
     const handleFetch = async () => {
       if (checkedProductIds.length > 0) {
@@ -38,9 +41,9 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         setTotal(0)
       }
       const params = {
-        ids: cartState[0].productIds
+        ids: cartState.productIds
       }
-      if (cartState[0].productIds && cartState[0].productIds?.length > 0) {
+      if (cartState.productIds && cartState.productIds?.length > 0) {
         const productsInfo = await axios.get("/products/getByIds", { params })
         setProducts(productsInfo.data.map((product: any) => {
           return {
@@ -61,6 +64,48 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     }
     handleFetch()
   }, [checkedProductIds])
+
+  // 结算
+  const handleSettlement = async () => {
+    //1、创建订单 入库 
+    const order: Order = {
+      id: 0,
+      price: total,
+      status: 0,
+      createTime: moment().format("YYYY-MM-DD"),
+    }
+    const orderInfo = await axios.post("/orders", order)
+    //2、将商品订单对应关系入库
+    const params = checkedProductIds.map(productId => {
+      return [
+        orderInfo.data.insertId,
+        productId
+      ]
+    })
+    await axios.post("/op", params)
+
+    //3、跳转到支付页面
+    //TODO:将选中的商品的状态设为未支付 并且从购物车中删除
+
+    const result = cartState?.productIds?.filter((productId: number) => {
+      return !checkedProductIds.includes(productId)
+    })
+    setCartState({
+      productIds: result,
+    })
+    localStorage.setItem("carts", JSON.stringify({
+      productIds: result,
+    }))
+
+    const params2 = {
+      ids: checkedProductIds
+    }
+    //设置支付商品的状态为0（锁定）
+    axios.put("/products/lock", params2)
+    //从数据库删除
+    axios.delete("/carts/carts/removeBatch/", { params: params2 })
+    navigate(`/pay/${orderInfo.data.insertId}`)
+  }
   return (
     <>
       <Header />
@@ -74,46 +119,52 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         p-2
       >
         <Center mb-2 fw-800 fontSize={'3xl'}>购物车</Center>
-        <TableContainer min-h-40vh>
-          <Table variant='simple'>
-            <TableCaption>
-              <Box mb-6>
-                <span text-7>总金额：{total}</span>
-              </Box>
-              <Box>
-                <Button
-                  bg={"rgba(74, 222, 128,0.8)"}
-                  _hover={{
-                    bg: "rgba(22, 163, 74,0.9)"
-                  }}
-                  letterSpacing={"3px"}
-                >结算</Button>
-              </Box>
-            </TableCaption>
-            <Thead>
-              <Tr>
-                <Th>状态</Th>
-                <Th>商品图片</Th>
-                <Th>商品名称</Th>
-                <Th>商品分类</Th>
-                <Th>卖家信息</Th>
-                <Th>价格</Th>
-                <Th>操作</Th>
-              </Tr>
-            </Thead>
 
-            <Tbody>
-              {products.map(product => {
-                return (
-                  <CartItem key={product.id} product={product} addCheckedProduct={addCheckedProduct} removeCheckedProduct={removeCheckedProduct} />
-                )
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
         {
           products.length === 0 ?
-            <Center my-2 text-6 text-rose>购物车空荡荡的~~~</Center> : null
+            <Center
+              my-2
+              text-6
+              text-rose>购物车空荡荡的~~~</Center>
+            :
+            <TableContainer min-h-40vh>
+              <Table variant='simple'>
+                <TableCaption>
+                  <Box mb-6>
+                    <span text-7>总金额：{total}</span>
+                  </Box>
+                  <Box>
+                    <Button
+                      bg={"rgba(74, 222, 128,0.8)"}
+                      _hover={{
+                        bg: "rgba(22, 163, 74,0.9)"
+                      }}
+                      letterSpacing={"3px"}
+                      onClick={handleSettlement}
+                    >结算</Button>
+                  </Box>
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th>状态</Th>
+                    <Th>商品图片</Th>
+                    <Th>商品名称</Th>
+                    <Th>商品分类</Th>
+                    <Th>卖家信息</Th>
+                    <Th>价格</Th>
+                    <Th>操作</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {products.map(product => {
+                    return (
+                      <CartItem key={product.id} product={product} addCheckedProduct={addCheckedProduct} removeCheckedProduct={removeCheckedProduct} />
+                    )
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
         }
       </Box >
       <Footer />
