@@ -20,6 +20,7 @@ import Products from "./pages/Products"
 import EditProduct from "./pages/EditProduct"
 import Chat from "./pages/Chat"
 import Pay from "./pages/Pay"
+import Orders from "./pages/Orders"
 
 function App() {
   const navigate = useNavigate()
@@ -75,6 +76,7 @@ function App() {
       <Route path="/edit/:productId" element={<EditProduct />} />
       <Route path="/chat/:userId" element={<Chat />} />
       <Route path="/pay/:orderId" element={<Pay />} />
+      <Route path="/orders" element={<Orders />} />
     </Routes>
   )
 }

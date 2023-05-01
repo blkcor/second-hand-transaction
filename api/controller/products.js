@@ -68,7 +68,6 @@ export const deleteproduct = (req, res) => {
 //get products by ids
 export const getProductsByIds = (req, res) => {
   const { ids, status } = req.query
-  if (!status) status = 1
   if (!ids) return res.status(400).json('ids is required!')
   const q = `SELECT * FROM products WHERE id IN (?) AND status = ${status}`;
   db.query(q, [ids], (err, result) => {
@@ -76,8 +75,6 @@ export const getProductsByIds = (req, res) => {
     return res.status(200).json(result)
   })
 }
-
-
 
 const getproductsByType = (categoryId, pageSize, offset, res) => {
   const q = 'SELECT * FROM products WHERE category_id = ? LIMIT ? OFFSET ?';

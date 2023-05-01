@@ -46,7 +46,7 @@ const Pay: React.FC<PayProps> = () => {
         price: order.data.price,
         status: order.data.status,
         createTime: moment(order.data['create_time']).format("YYYY-MM-DD"),
-        address: ''
+        address: order.data.address
       })
 
       const productInfo = products.data.map((product: any) => ({

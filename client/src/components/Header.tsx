@@ -106,9 +106,9 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
               <Image src='/collection.svg' h-11 _hover={{ cursor: "pointer" }} />
             </Link>
           </div>
-          <div className='order'>
+          <Link to={"/orders"}>
             <Image src='/order.svg' h-11 _hover={{ cursor: "pointer" }} />
-          </div>
+          </Link>
           <div className='shopping'>
             <Link to={"/shoppings"}>
               {

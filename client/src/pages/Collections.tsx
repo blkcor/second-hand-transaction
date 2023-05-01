@@ -25,7 +25,8 @@ const Collections: React.FC<CollectionsProps> = () => {
       .then(async (res) => {
         const productIds: number[] = res.data.map((collection: collection) => collection.product_id)
         const params = {
-          ids: productIds
+          ids: productIds,
+          status: 1
         }
         const productsInfo = await axios.get('/products/getByIds', { params })
 
@@ -61,23 +62,24 @@ const Collections: React.FC<CollectionsProps> = () => {
         bg-gray-200
         rounded-5
         p-2
+
       >
         <Center mb-2 fw-800 fontSize={'3xl'}>我的收藏</Center>
-        <TableContainer min-h-60vh>
-          <Table variant='simple'>
-            <TableCaption>some collections</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>商品名称</Th>
-                <Th>商品图片</Th>
-                <Th>商品分类</Th>
-                <Th>商品价格</Th>
-                <Th>卖家信息</Th>
-              </Tr>
-            </Thead>
-            {products.length === 0 ?
-              <Center position={"relative"} left-60 my-2 text-6 text-rose>看起来空荡荡的，快点去收藏一点喜欢的东西吧~</Center>
-              :
+        {products.length === 0 ?
+          <Center my-2 text-6 text-rose>看起来空荡荡的，快点去收藏一点喜欢的东西吧~</Center>
+          :
+          <TableContainer min-h-60vh>
+            <Table variant='simple'>
+              <TableCaption>some collections</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th>商品名称</Th>
+                  <Th>商品图片</Th>
+                  <Th>商品分类</Th>
+                  <Th>商品价格</Th>
+                  <Th>卖家信息</Th>
+                </Tr>
+              </Thead>
               <Tbody>
                 {products.map(product => {
                   return (
@@ -85,9 +87,10 @@ const Collections: React.FC<CollectionsProps> = () => {
                   )
                 })}
               </Tbody>
-            }
-          </Table>
-        </TableContainer>
+
+            </Table>
+          </TableContainer>
+        }
       </Box >
       <Footer />
     </>
