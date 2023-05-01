@@ -4,4 +4,5 @@ export type Order = {
   status: number,
   createTime: string,
   address?: string,
+  userId: number
 }

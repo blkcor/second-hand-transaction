@@ -3,7 +3,7 @@ import { createOrder, getOrders, getOrder, updateOrder, deleteOrder, updateAddre
 const router = express.Router()
 
 router.post('/', createOrder)
-router.get('/', getOrders)
+router.get('/getByUserId', getOrders)
 router.get('/:id', getOrder)
 router.put('/', updateOrder)
 router.put("/updateAddress", updateAddress)

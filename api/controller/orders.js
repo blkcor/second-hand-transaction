@@ -7,8 +7,8 @@ export const createOrder = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
     const { price, status, createTime } = req.body
-    const q = `INSERT INTO orders ( price, status,create_time) VALUES (?,?,?)`
-    db.query(q, [price, status, createTime], (err, result) => {
+    const q = `INSERT INTO orders ( price, status,create_time,user_id) VALUES (?,?,?)`
+    db.query(q, [price, status, createTime, userInfo.id], (err, result) => {
       if (err) return res.status(500).json(err)
       res.status(200).json(result)
     })
@@ -17,11 +17,12 @@ export const createOrder = (req, res) => {
 
 export const getOrders = (req, res) => {
   const token = req.cookies.acceptToken
+  const userId = req.params.userId
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
-    const q = `SELECT * FROM orders`
-    db.query(q, [orderId], (err, result) => {
+    const q = `SELECT * FROM orders WHERE user_id = ?`
+    db.query(q, [userInfo.id], (err, result) => {
       if (err) return res.status(500).json(err)
       res.status(200).json(result)
     })

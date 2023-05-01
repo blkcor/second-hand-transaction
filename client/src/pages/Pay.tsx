@@ -26,7 +26,8 @@ const Pay: React.FC<PayProps> = () => {
     price: 0,
     status: 0,
     createTime: '',
-    address: ''
+    address: '',
+    userId: 0,
   })
   const [products, setProducts] = useState<Product[]>()
   useEffect(() => {
@@ -46,7 +47,8 @@ const Pay: React.FC<PayProps> = () => {
         price: order.data.price,
         status: order.data.status,
         createTime: moment(order.data['create_time']).format("YYYY-MM-DD"),
-        address: order.data.address
+        address: order.data.address,
+        userId: order.data.user_id,
       })
 
       const productInfo = products.data.map((product: any) => ({
