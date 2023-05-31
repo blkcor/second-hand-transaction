@@ -16,6 +16,7 @@ const ProductItem: React.FC<CollectionItemProps> = ({ product, userProfile }) =>
   useEffect(() => {
     const handleFetch = async () => {
       const userInfo = await axios.get(`/users/find/${product.sellerId}`)
+      console.log(userInfo)
       setSellerInfo({
         id: userInfo.data.id,
         username: userInfo.data.username,

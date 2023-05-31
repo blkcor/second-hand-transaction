@@ -31,7 +31,8 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     const handleFetch = async () => {
       if (checkedProductIds.length > 0) {
         const params = {
-          ids: checkedProductIds
+          ids: checkedProductIds,
+          status: 1
         }
         const productsInfo = await axios.get("/products/getByIds", { params })
         setTotal(productsInfo.data.reduce((acc: number, cur: any) => {
@@ -41,7 +42,8 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         setTotal(0)
       }
       const params = {
-        ids: cartState.productIds
+        ids: cartState.productIds,
+        status: 1
       }
       if (cartState.productIds && cartState.productIds?.length > 0) {
         const productsInfo = await axios.get("/products/getByIds", { params })
@@ -70,6 +72,7 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     //1、创建订单 入库 
     const order: Order = {
       id: 0,
+      userId: 1,
       price: total,
       status: 0,
       createTime: moment().format("YYYY-MM-DD"),

@@ -22,8 +22,9 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ cover, name, price, publish
         border: "2px solid red",
         cursor: "pointer"
       }}
+
     >
-      <Image src={cover} rounded-2 objectFit={'cover'} />
+      <Image src={cover} h={'20vh'} margin={"0 auto"} rounded-2 objectFit={'cover'} />
       <Center>
         <span fw-600>{name}</span>
       </Center>

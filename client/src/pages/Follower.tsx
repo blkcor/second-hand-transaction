@@ -59,63 +59,67 @@ const Follower: React.FC<FollowerProps> = () => {
     setSearchContent(e.target.value)
   }
 
-  useMemo(async () => {
-    let result: AxiosResponse<any, any>;
-    if (searchContent) {
-      result = await axios.get(`/users/search/${searchContent}`)
-      if (result?.data) {
-        const followInfo = await axios.get("/follows")
-        const followingIds = followInfo.data.map((follow: any) => follow.following_id)
-        const filterResult = result.data.filter((user: any) => followingIds.includes(user.id))
-        if (result.status === 200 && filterResult.length > 0) {
-          const promiseArray = filterResult?.data?.map(async (user: any) => {
-            return await axios.get(`/follows/mutualed/${user.id}`)
-          })
-          const res = Promise.all(promiseArray)
-          const mutualed = (await res).map((r: any) => r.data)
-          const followers: FollowerType[] = result.data.map((user: any, index: number) => {
-            return {
-              id: user.id,
-              username: user.username,
-              introduction: user.introduction,
-              avatar: user.avatar,
-              mutualed: mutualed[index].message === "Mutualed"
-            }
-          })
-          setFollowerInfo(followers)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let result: AxiosResponse<any, any>;
+      if (searchContent) {
+        result = await axios.get(`/users/search/${searchContent}`);
+        if (result?.data) {
+          const followInfo = await axios.get('/follows');
+          const followingIds = followInfo.data.map((follow: any) => follow.following_id);
+          const filterResult = result.data.filter((user: any) => followingIds.includes(user.id));
+          if (result.status === 200 && filterResult.length > 0) {
+            const promiseArray = filterResult.map(async (user: any) => {
+              return await axios.get(`/follows/mutualed/${user.id}`);
+            });
+
+            const res = await Promise.all(promiseArray);
+            const mutualed = res.map((r: any) => r.data);
+            const followers: FollowerType[] = result.data.map((user: any, index: number) => {
+              return {
+                id: user.id,
+                username: user.username,
+                introduction: user.introduction,
+                avatar: user.avatar,
+                mutualed: mutualed[index]?.message === 'Mutualed',
+              };
+            });
+            setFollowerInfo(followers);
+          } else {
+            setFollowerInfo([]);
+          }
         } else {
-          setFollowerInfo([])
+          setFollowerInfo([]);
         }
       } else {
-        setFollowerInfo([])
+        const followInfo = await axios.get('/follows');
+        const followingIds = followInfo.data.map((follow: any) => follow.following_id);
+        const params = {
+          ids: followingIds,
+        };
+        const userInfo = await axios.get('/users/find', { params });
+        const promiseArray = userInfo.data.map(async (user: any) => {
+          return await axios.get(`/follows/mutualed/${user.id}`);
+        });
+        const result = await Promise.all(promiseArray);
+        const mutualed = result.map((res: any) => res.data);
+
+        const followers: FollowerType[] = userInfo.data.map((user: any, index: number) => {
+          return {
+            id: user.id,
+            username: user.username,
+            introduction: user.introduction,
+            avatar: user.avatar,
+            mutualed: mutualed[index].message === 'Mutualed',
+          };
+        });
+        setFollowerInfo(followers);
       }
+    };
 
-    } else {
-      const followInfo = await axios.get("/follows")
-      const followingIds = followInfo.data.map((follow: any) => follow.following_id)
-      const params = {
-        ids: followingIds
-      }
-      const userInfo = await axios.get("/users/find", { params })
-      const promiseArray = userInfo.data.map(async (user: any) => {
-        return await axios.get(`/follows/mutualed/${user.id}`)
-      })
-      const result = Promise.all(promiseArray)
-      const mutualed = (await result).map((res: any) => res.data)
-
-      const followers: FollowerType[] = userInfo.data.map((user: any, index: number) => {
-        return {
-          id: user.id,
-          username: user.username,
-          introduction: user.introduction,
-          avatar: user.avatar,
-          mutualed: mutualed[index].message === "Mutualed"
-        }
-      })
-      setFollowerInfo(followers)
-    }
-
-  }, [searchContent])
+    fetchData();
+  }, [searchContent]);
 
 
   return (

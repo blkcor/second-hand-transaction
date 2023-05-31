@@ -39,7 +39,7 @@ const FollowItem: React.FC<FollowItemProps> = ({ follower }) => {
           w-10
           h-10
           objectFit={"cover"}
-          src={"/upload/" + follower.avatar} /></Td>
+          src={follower.avatar ? `/upload/${follower.avatar}` : '/sliding/bg2.jpeg'} /></Td>
       <Td
         fw-800
         _hover={{

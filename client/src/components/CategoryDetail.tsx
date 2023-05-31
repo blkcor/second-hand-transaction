@@ -85,6 +85,8 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
         setProductSlices(productSlices);
       } catch (err) {
         console.log(err);
+      } finally {
+        console.log(products)
       }
     };
 
@@ -117,12 +119,13 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
               {productSlices?.map(productSlice =>
 
                 <Link key={productSlice.id} to={`/product/${productSlice.id}/${categoryId}`}>
-                  <CategoryItem key={productSlice.id} name={productSlice.name} cover='/sliding/bg.jpeg' price={productSlice.price} publishTime={productSlice.publishTime} />
+                  <CategoryItem key={productSlice.id} name={productSlice.name} cover={`/upload/${productSlice.cover}` || '/sliding/bg.jpeg'} price={productSlice.price} publishTime={productSlice.publishTime} />
                 </Link>
               )}
             </Grid> :
             <Center fw-800 text-8 text-red-500>暂无商品!</Center>
         }
+
       </div >
       <Footer />
     </>

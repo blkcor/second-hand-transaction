@@ -7,7 +7,7 @@ export const createOrder = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
     const { price, status, createTime } = req.body
-    const q = `INSERT INTO orders ( price, status,create_time,user_id) VALUES (?,?,?)`
+    const q = `INSERT INTO orders ( price, status,create_time,user_id) VALUES (?,?,?,?)`
     db.query(q, [price, status, createTime, userInfo.id], (err, result) => {
       if (err) return res.status(500).json(err)
       res.status(200).json(result)
