@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import userAtom from '../atoms/authAtom';
+
 import {
   Input,
   Button,
@@ -16,10 +17,12 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  useToast
 } from '@chakra-ui/react';
 import request from '../axios';
 
 const Login: React.FC = () => {
+  const toast = useToast()
   const [form, setForm] = useState({
     username: '',
     password: ''
@@ -29,10 +32,7 @@ const Login: React.FC = () => {
   const [_, setUserState] = useRecoilState(userAtom)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    localStorage.getItem('unlogin') === 'y'
-    //TODO:alert dialog with 'please login first'
-  }, [])
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -58,8 +58,15 @@ const Login: React.FC = () => {
         id,
         username
       }))
-      localStorage.removeItem("unlogin")
-      //alert dialog with 'login successfully'
+
+      toast({
+        position: "top",
+        title: '登录成功!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+
       setTimeout(() => {
         navigate('/')
       }, 1000)

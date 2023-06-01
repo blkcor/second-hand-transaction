@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { Box, Button, Center, Flex, Heading, Image, Input } from '@chakra-ui/react';
+import { Box, Button, useToast, Flex, Heading, Image, Input } from '@chakra-ui/react';
 import {
   Product,
   productTagMap,
@@ -37,6 +37,8 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const navigate = useNavigate()
   //购物车信息
   const cartState = useRecoilState(cartAtom);
+
+  const toast = useToast();
   function updateCart(newCart: cartState) {
     setCartState(newCart);
   }
@@ -129,9 +131,23 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
         productId
       }
       result = await axios.post(`/collections/`, params)
+      toast({
+        position: "top",
+        title: "收藏成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } else {
       //如果已经收藏 我们取消收藏
       result = await axios.delete(`/collections/${productId}`)
+      toast({
+        position: "top",
+        title: "取消收藏",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     }
 
     if (result.status === 200) setCollected(!collected)
@@ -146,6 +162,13 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
       };
       updateCart(newCart);
       localStorage.setItem("carts", JSON.stringify(newCart));
+      toast({
+        position: "top",
+        title: "添加成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
       setAdded(true)
     }
   }
@@ -165,7 +188,16 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
     const result = await axios.post("/comments", params)
     if (result.status === 200) {
       setComment("")
-      window.location.reload()
+      toast({
+        position: "top",
+        title: "评论成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000);
 
     }
   }

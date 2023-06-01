@@ -46,7 +46,9 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         status: 1
       }
       if (cartState.productIds && cartState.productIds?.length > 0) {
+
         const productsInfo = await axios.get("/products/getByIds", { params })
+        console.log(productsInfo)
         setProducts(productsInfo.data.map((product: any) => {
           return {
             ...product,
@@ -87,9 +89,6 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     })
     await axios.post("/op", params)
 
-    //3、跳转到支付页面
-    //TODO:将选中的商品的状态设为未支付 并且从购物车中删除
-
     const result = cartState?.productIds?.filter((productId: number) => {
       return !checkedProductIds.includes(productId)
     })
@@ -105,7 +104,7 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
     }
     //设置支付商品的状态为0（锁定）
     axios.put("/products/lock", params2)
-    //从数据库删除pa
+    //从数据库删除购物车中的商品
     axios.delete("/carts/carts/removeBatch/", { params: params2 })
     navigate(`/pay/${orderInfo.data.insertId}`)
   }

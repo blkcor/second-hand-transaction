@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom"
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Home from "./pages/Home"
@@ -21,10 +21,13 @@ import EditProduct from "./pages/EditProduct"
 import Chat from "./pages/Chat"
 import Pay from "./pages/Pay"
 import Orders from "./pages/Orders"
+import { useToast } from "@chakra-ui/react"
 
 function App() {
   const navigate = useNavigate()
+  const toast = useToast()
   const user = localStorage.getItem('currentUser')
+  const location = useLocation()
   const [userState, setUserState] = useRecoilState(userAtom);
   const [cartState, setCartState] = useRecoilState(cartAtom);
   useEffect(() => {
@@ -48,7 +51,16 @@ function App() {
     }
     if (user === null) {
       localStorage.setItem("unlogin", "y")
-      navigate('/login')
+      if (location.pathname !== '/login' && location.pathname !== '/register') {
+        toast({
+          position: "top",
+          title: "请先登录!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
+        navigate('/login')
+      }
     }
     else {
       const currentUser = JSON.parse(localStorage.getItem('currentUser') as string)

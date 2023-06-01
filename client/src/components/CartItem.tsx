@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Product, mapEngTagToChn, productTagColorMap, productTagMap } from '../types/Product';
 
 import { Seller } from '../types/Seller';
-import { Box, Button, Checkbox, Image, Input, Radio, Td, Tr } from '@chakra-ui/react';
+import { Box, Button, Checkbox, Image, useToast, Td, Tr } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import axios from '../axios';
 
@@ -13,6 +13,7 @@ type CartItemProps = {
 };
 
 const CartItem: React.FC<CartItemProps> = ({ product, addCheckedProduct, removeCheckedProduct }) => {
+  const toast = useToast()
   const [sellerInfo, setSellerInfo] = useState<Seller>()
   useEffect(() => {
     const handleFetch = async () => {
@@ -31,7 +32,26 @@ const CartItem: React.FC<CartItemProps> = ({ product, addCheckedProduct, removeC
     const carts = JSON.parse(localStorage.getItem('carts') || '[]')
     carts.productIds.splice(carts.productIds.indexOf(product.id), 1)
     localStorage.setItem('carts', JSON.stringify(carts))
-    if (result.status === 200) window.location.reload()
+    if (result.status === 200) {
+      toast({
+        position: "top",
+        title: "删除成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      })
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    } else {
+      toast({
+        position: "top",
+        title: "删除失败",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      })
+    }
   }
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

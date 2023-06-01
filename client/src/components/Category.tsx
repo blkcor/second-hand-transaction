@@ -1,5 +1,4 @@
 import { List, ListItem, Button } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons'
 import React from 'react';
 import { Link } from 'react-router-dom';
 

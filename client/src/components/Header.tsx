@@ -1,4 +1,4 @@
-import { Flex, Input, Image, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import { Flex, Input, Image, Menu, MenuButton, MenuList, MenuItem, useToast } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
@@ -14,6 +14,7 @@ type HeaderProps = {
 
 
 const Header: React.FC<HeaderProps> = ({ content }) => {
+  const toast = useToast()
   const cartState = useRecoilState(cartAtom)
   const navigate = useNavigate();
   const [searchInputState, setSearchInputState] = useState<SearchInputState>("blur")
@@ -45,7 +46,16 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
     await axios.post("/auth/logout")
     localStorage.removeItem("currentUser")
     localStorage.removeItem("carts")
-    navigate("/login")
+    setTimeout(() => {
+      navigate("/login")
+      toast({
+        position: "top",
+        title: "登出成功",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+      })
+    }, 1000)
   }
   return (
     <>
@@ -112,6 +122,7 @@ const Header: React.FC<HeaderProps> = ({ content }) => {
           <div className='shopping'>
             <Link to={"/shoppings"}>
               {
+
                 cartState[0] && cartState[0].productIds && cartState[0]?.productIds?.length > 0 ?
                   <span
                     block

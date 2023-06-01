@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Comment } from '../types/Comment';
-import { Box, Button, Flex, Image } from '@chakra-ui/react';
-import { User } from '../types/User';
+import { Box, Button, Flex, Image, useToast } from '@chakra-ui/react';
 import axios from '../axios';
 import { Link } from 'react-router-dom';
 
@@ -15,6 +14,7 @@ type UserInfo = {
   avatar: string,
 }
 const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
+  const toast = useToast()
   const [commentUser, setCommentUser] = useState<UserInfo>()
   const [isOwner, setIsOwner] = useState<boolean>()
   useEffect(() => {
@@ -36,9 +36,36 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
   }, [])
 
   const handleDeleteComment = async () => {
-    const result = await axios.delete(`/comments/${comment.id}`)
-    if (result.status === 200) {
-      window.location.reload()
+
+
+    // 弹出 confirm 框 询问是否删除
+    if (window.confirm("确定删除该评论吗？")) {
+      const result = await axios.delete(`/comments/${comment.id}`)
+      if (result.status === 200) {
+        toast({
+          title: "删除成功",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        })
+        window.location.reload()
+      }
+      else {
+        toast({
+          title: "删除失败",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        })
+      }
+    } else {
+      toast({
+        position: "top",
+        title: "取消删除",
+        status: "warning",
+        duration: 2000,
+        isClosable: true,
+      })
     }
   }
   return (

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Center, Flex, Heading, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Center, Flex, Heading, Image, Input, Radio, RadioGroup, Select, Stack, Textarea, useDisclosure, useToast } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/authAtom';
 import request from '../axios';
@@ -8,7 +8,7 @@ import ProfileInput from '../components/ProfileInput';
 import Footer from '../components/Footer';
 import axios from '../axios';
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+
 
 type ProfileProps = {
 
@@ -43,6 +43,7 @@ const Profile: React.FC<ProfileProps> = () => {
   const [_, setGender] = useState(userInfo?.gender)
   const [avatarFile, setAvatarFile] = useState<File>()
   const [saveStatus, setSaveStatus] = useState(false)
+  const toast = useToast();
   useEffect(() => {
     request.get(`/users/find/${user.id}`,)
       .then(result => {
@@ -114,6 +115,7 @@ const Profile: React.FC<ProfileProps> = () => {
     }
   };
 
+
   const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     let avatarUrl;
@@ -130,10 +132,25 @@ const Profile: React.FC<ProfileProps> = () => {
     }
     //请求接口
     const result = await axios.put(`/users`, { ...userForm, avatar: avatarUrl })
-    if (result.status !== 200) {
+    if (result.status === 200) {
+      toast({
+        position: "top",
+        title: " 个人信息修改成功!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      })
       return
+    } else {
+      toast({
+        position: "top",
+        title: " 个人信息修改失败!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      })
     }
-    setSaveStatus(true)
+
     //更新用户信息
     localStorage.setItem("currentUser",
       JSON.stringify({ username: userInfo.username, id: user.id }))

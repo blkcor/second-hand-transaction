@@ -1,4 +1,4 @@
-import { Tr, Td, Button, Image } from '@chakra-ui/react';
+import { Tr, Td, Button, Image, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { FollowerType } from '../types/Follower';
 import axios from '../axios';
@@ -23,12 +23,32 @@ const FollowItem: React.FC<FollowItemProps> = ({ follower }) => {
       followedId: id
     }
     const result = await axios.post("/follows/", params)
-    if (result.status === 200) setFollowing(true)
+    if (result.status === 200) {
+      toast({
+        position: "top",
+        title: "关注成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      }),
+        setFollowing(true)
+    }
   }
 
+  const toast = useToast()
   const handleCancelFollow = async (id: number) => {
     const result = await axios.delete(`/follows/${id}`)
-    if (result.status === 200) setFollowing(false)
+    if (result.status === 200) (
+      toast({
+        position: "top",
+        title: "取关成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      }),
+
+      setFollowing(false)
+    )
   }
 
   return (

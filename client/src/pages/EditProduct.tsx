@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Flex, Center, Input, Button, Textarea, Select, Box, Image } from '@chakra-ui/react';
+import { Flex, Center, Input, Button, Textarea, Select, Box, Image, useToast } from '@chakra-ui/react';
 import FileUpload from '../components/FileUpload';
 import ProfileInput from '../components/ProfileInput';
 import { productTagMap, mapEngTagToChn, Product } from '../types/Product';
@@ -14,6 +14,7 @@ type EditProductProps = {
 };
 
 const EditProduct: React.FC<EditProductProps> = () => {
+  const toast = useToast()
   const productId = useLocation().pathname.split('/')[2]
   const [isReadyToSave, setIsReadyToSave] = useState<boolean>(false)
   const [product, setProduct] = useState<Product>({
@@ -52,10 +53,23 @@ const EditProduct: React.FC<EditProductProps> = () => {
     if (isReadyToSave) {
       const handleSave = async () => {
         const proRe = await axios.put('/products/' + product.id, product)
-        console.log(proRe)
         if (proRe.status === 200) {
-          alert('发布成功')
+          toast({
+            position: "top",
+            title: "商品已保存",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          })
           navigate('/')
+        } else {
+          toast({
+            position: "top",
+            title: "商品保存失败",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
         }
       }
       handleSave()

@@ -67,6 +67,7 @@ const Follower: React.FC<FollowerProps> = () => {
         result = await axios.get(`/users/search/${searchContent}`);
         if (result?.data) {
           const followInfo = await axios.get('/follows');
+
           const followingIds = followInfo.data.map((follow: any) => follow.following_id);
           const filterResult = result.data.filter((user: any) => followingIds.includes(user.id));
           if (result.status === 200 && filterResult.length > 0) {
@@ -76,7 +77,7 @@ const Follower: React.FC<FollowerProps> = () => {
 
             const res = await Promise.all(promiseArray);
             const mutualed = res.map((r: any) => r.data);
-            const followers: FollowerType[] = result.data.map((user: any, index: number) => {
+            const followers: FollowerType[] = filterResult.map((user: any, index: number) => {
               return {
                 id: user.id,
                 username: user.username,
@@ -85,6 +86,7 @@ const Follower: React.FC<FollowerProps> = () => {
                 mutualed: mutualed[index]?.message === 'Mutualed',
               };
             });
+            console.log(followers)
             setFollowerInfo(followers);
           } else {
             setFollowerInfo([]);

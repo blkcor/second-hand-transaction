@@ -4,13 +4,13 @@ import moment from "moment";
 
 export const getProducts = (req, res) => {
   // 查询第 page 页的数据，每页显示 pageSize 条数据
-  const { categoryId } = req.query
+  const { categoryId,status } = req.query
   const page = 1
   const pageSize = 10;
   // 计算查询的偏移量
   const offset = (page - 1) * pageSize
   if (categoryId) {
-    getproductsByType(categoryId, pageSize, offset, res)
+    getproductsByType(categoryId, pageSize, offset, res,status)
   }
   else {
     getAllproducts(pageSize, offset, res)
@@ -68,6 +68,7 @@ export const deleteproduct = (req, res) => {
 //get products by ids
 export const getProductsByIds = (req, res) => {
   const { ids, status } = req.query
+  console.log(status)
   if (!ids) return res.status(400).json('ids is required!')
   const q = `SELECT * FROM products WHERE id IN (?) AND status = ${status}`;
   db.query(q, [ids], (err, result) => {
@@ -76,16 +77,17 @@ export const getProductsByIds = (req, res) => {
   })
 }
 
-const getproductsByType = (categoryId, pageSize, offset, res) => {
-  const q = 'SELECT * FROM products WHERE category_id = ? LIMIT ? OFFSET ?';
+const getproductsByType = (categoryId, pageSize, offset, res,status) => {
+  const q = 'SELECT * FROM products WHERE category_id = ?  AND status = 1 LIMIT ? OFFSET ?';
   db.query(q, [categoryId, pageSize, offset], (err, result) => {
     if (err) return res.status(500).json(err)
+    console.log(result)
     return res.status(200).json(result)
   })
 }
 
 const getAllproducts = (pageSize, offset, res) => {
-  const q = 'SELECT * FROM products LIMIT ? OFFSET ? AND status = 1';
+  const q = 'SELECT * FROM products LIMIT ? OFFSET ?';
   db.query(q, [pageSize, offset], (err, result) => {
     if (err) return res.status(500).json(err)
     return res.status(200).json(result)
@@ -113,7 +115,7 @@ export const getAllProducts = (req, res) => {
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
-    const q = "SELECT * FROM products WHERE seller_id = ?"
+    const q = "SELECT * FROM products WHERE seller_id = ? AND status = 1"
     db.query(q, [userInfo.id], (err, result) => {
       if (err) return res.status(500).json(err)
       return res.status(200).json(result)

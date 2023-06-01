@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FileUpload from '../components/FileUpload';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Box, Button, Center, Flex, Image, Input, Select, Textarea } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Image, Input, Select, Textarea, useToast } from '@chakra-ui/react';
 import ProfileInput from '../components/ProfileInput';
 import { Product, mapEngTagToChn, productTagMap } from '../types/Product';
 import moment from 'moment';
@@ -14,6 +14,7 @@ type PublishProps = {
 };
 
 const Publish: React.FC<PublishProps> = () => {
+  const toast = useToast()
   const [product, setProduct] = useState<Product>({
     id: 0,
     description: '',
@@ -33,10 +34,25 @@ const Publish: React.FC<PublishProps> = () => {
         try {
           const proRe = await axios.post('/products', product);
           if (proRe.status === 200) {
-            alert('发布成功');
-            navigate('/');
+            toast({
+              position: "top",
+              title: "发布成功",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            })
+            setTimeout(() => {
+              navigate('/')
+            }, 3000)
           }
         } catch (err) {
+          toast({
+            position: "top",
+            title: "发布失败",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
           console.log(err);
         }
       };
