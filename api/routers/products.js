@@ -4,7 +4,8 @@ import {
   getDetail, publishproduct,
   getByUserId, deleteproduct,
   getAllProducts, updateProduct,
-  getProductsByIds, searchProduct
+  getProductsByIds, searchProduct,
+  getAllproductsWithoutStatus
 } from '../controller/products.js'
 const router = express.Router()
 
@@ -13,6 +14,7 @@ router.get('/', getProducts)
 router.get('/getByIds', getProductsByIds)
 router.get('/getByUserId/:userId', getByUserId)
 router.get('/getAllproducts', getAllProducts)
+router.get('/getAllproductsWithoutStatus', getAllproductsWithoutStatus)
 //根据搜索内容模糊查询
 router.get('/search/:keyword', searchProduct)
 router.get('/:id', getDetail)

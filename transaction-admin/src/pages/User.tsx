@@ -67,7 +67,7 @@ const User: React.FC<UserProps> = () => {
                   </Thead>
                   <Tbody>
                     {users.map((user: any) => (
-                      <UserItem user={user} />
+                      <UserItem key={user.id} user={user} />
                     ))}
                   </Tbody>
                 </Table>

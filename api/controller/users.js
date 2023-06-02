@@ -59,3 +59,18 @@ export const getAllUsers = (req, res) => {
     return res.status(200).json(result)
   })
 }
+
+
+export const deleteUser = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    const q = "DELETE FROM users WHERE id = ?"
+    db.query(q, [req.params.userId], (err, result) => {
+      if (err) return res.status(500).json(err)
+      if (result.affectedRows > 0) return res.status(200).json({ message: 'User deleted' })
+      return res.status(403).json("You can only delete yourself")
+    })
+  })
+}

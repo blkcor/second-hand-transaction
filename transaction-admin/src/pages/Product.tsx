@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SideBar from '../components/SideBar';
 import Main from '../components/Main';
 import { Button, Flex, Table, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
-import UserItem from '../components/UserItem';
+import axios from '../axios';
+import ProductItem from '../components/ProductItem';
+
 
 type ProductProps = {
 
 };
 
 const Product: React.FC<ProductProps> = () => {
-
+  const [products, setProducts] = React.useState([])
+  useEffect(() => {
+    axios.get("/products/getAllproductsWithoutStatus").then(res => {
+      setProducts(res.data)
+    })
+  }, [])
   return (
     <>
       <Flex>
@@ -56,13 +63,14 @@ const Product: React.FC<ProductProps> = () => {
                       <Th>商品图片</Th>
                       <Th>商品描述</Th>
                       <Th>商品价格</Th>
+                      <Th>商品状态</Th>
                       <Th>操作</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {/* {users.map((user: any) => (
-                      <UserItem user={user} />
-                    ))} */}
+                    {products.map((product: any) => (
+                      <ProductItem key={product.id} product={product} />
+                    ))}
                   </Tbody>
                 </Table>
               </TableContainer>

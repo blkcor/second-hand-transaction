@@ -121,6 +121,19 @@ export const getAllProducts = (req, res) => {
   })
 }
 
+export const getAllproductsWithoutStatus = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const q = "SELECT * FROM products"
+    db.query(q, (err, result) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json(result)
+    })
+  })
+}
+
 
 export const updateProduct = (req, res) => {
   const token = req.cookies.acceptToken
