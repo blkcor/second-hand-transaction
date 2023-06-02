@@ -85,8 +85,6 @@ const CategoryDetail: React.FC<CategoryDetailProps> = () => {
         setProductSlices(productSlices);
       } catch (err) {
         console.log(err);
-      } finally {
-        console.log(products)
       }
     };
 

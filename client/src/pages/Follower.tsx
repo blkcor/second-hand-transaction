@@ -86,7 +86,6 @@ const Follower: React.FC<FollowerProps> = () => {
                 mutualed: mutualed[index]?.message === 'Mutualed',
               };
             });
-            console.log(followers)
             setFollowerInfo(followers);
           } else {
             setFollowerInfo([]);

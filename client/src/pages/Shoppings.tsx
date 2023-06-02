@@ -48,7 +48,6 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
       if (cartState.productIds && cartState.productIds?.length > 0) {
 
         const productsInfo = await axios.get("/products/getByIds", { params })
-        console.log(productsInfo)
         setProducts(productsInfo.data.map((product: any) => {
           return {
             ...product,

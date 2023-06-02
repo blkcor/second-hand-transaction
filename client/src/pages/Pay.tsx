@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useLocation } from 'react-router-dom';
-import { Box, Button, Center, Flex, Heading, Input } from '@chakra-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Center, Flex, Heading, Input, useToast } from '@chakra-ui/react';
 import { Order } from '../types/Order';
 import axios from '../axios';
 import moment from 'moment';
@@ -14,13 +14,13 @@ type PayProps = {
 
 };
 
-//3、调用支付接口 设置订单状态为已支付
-//4、支付成功后跳转到订单详情页
 const Pay: React.FC<PayProps> = () => {
   const orderId = useLocation().pathname.split("/")[2]
   const [addressState, setAddressState] = useState<boolean>(false)
   const [tip, setTip] = useState<string>('')
   const [tipType, setTipType] = useState<string>("error")
+  const toast = useToast()
+  const navigate = useNavigate()
   const [order, setOrder] = useState<Order>({
     id: 0,
     price: 0,
@@ -99,6 +99,45 @@ const Pay: React.FC<PayProps> = () => {
     } else {
       setTip("保存失败!")
       setTipType("error")
+    }
+  }
+
+  const handlePay = async () => {
+    //设置订单状态为已支付
+    const result = await axios.put("/orders/updateStatus", { orderId, status: 1 })
+    if (result.status === 200) {
+      //跳转到订单详情页
+      toast({
+        position: "top",
+        title: "支付成功",
+        description: "订单支付成功",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      })
+
+      setTimeout(() => {
+        navigate(`/orders`)
+      }, 1000)
+    }
+  }
+
+  const handleCancel = async () => {
+    //设置订单状态为待支付
+    const result = await axios.put("/orders/updateStatus", { orderId, status: 0 })
+    if (result.status === 200) {
+      //跳转到订单详情页
+      toast({
+        position: "top",
+        title: "取消成功",
+        description: "订单取消成功",
+        status: "warning",
+        duration: 2000,
+        isClosable: true,
+      })
+      setTimeout(() => {
+        navigate(`/orders`)
+      }, 1000)
     }
   }
   return (
@@ -210,7 +249,15 @@ const Pay: React.FC<PayProps> = () => {
             _hover={{
               bg: "green.600"
             }}
+            onClick={handlePay}
           >支付</Button>
+          <Button
+            bg={"red.400"}
+            _hover={{
+              bg: "red.600"
+            }}
+            onClick={handleCancel}
+          >取消</Button>
         </Flex>
       </Flex >
       <Footer />

@@ -110,6 +110,9 @@ const OrderItem: React.FC<OrderItemProps> = ({ order }) => {
               _hover={{
                 bg: "green.600"
               }}
+              onClick={() => {
+                navigate(`/order/${order.id}`)
+              }}
             >
               查看详情
             </Button>

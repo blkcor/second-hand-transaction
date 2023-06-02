@@ -40,7 +40,6 @@ export const publishproduct = (req, res) => {
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
     const q = "INSERT INTO products (name, description, price, category_id, seller_id,status,publish_time,image_urls,cover) VALUES (?)";
-    console.log(req.body)
     const params = [req.body.name, req.body.description, req.body.price, Number(req.body.categoryId), req.body.sellerId, req.body.status, moment().format("YYYY-MM-DD"), req.body.imageUrls, req.body.cover]
     db.query(q, [params], (err, result) => {
       if (err) return res.status(500).json(err);
@@ -68,7 +67,7 @@ export const deleteproduct = (req, res) => {
 //get products by ids
 export const getProductsByIds = (req, res) => {
   const { ids, status } = req.query
-  console.log(status)
+  
   if (!ids) return res.status(400).json('ids is required!')
   const q = `SELECT * FROM products WHERE id IN (?) AND status = ${status}`;
   db.query(q, [ids], (err, result) => {
@@ -81,7 +80,6 @@ const getproductsByType = (categoryId, pageSize, offset, res,status) => {
   const q = 'SELECT * FROM products WHERE category_id = ?  AND status = 1 LIMIT ? OFFSET ?';
   db.query(q, [categoryId, pageSize, offset], (err, result) => {
     if (err) return res.status(500).json(err)
-    console.log(result)
     return res.status(200).json(result)
   })
 }

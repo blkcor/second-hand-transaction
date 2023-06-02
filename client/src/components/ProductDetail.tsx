@@ -57,7 +57,6 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
 
           // 获取产品信息
           const productRes = await axios.get(`/products/${productId}`);
-          console.log("@@@", productRes)
           // 获取卖家信息
           const sellerRes = await axios.get(`/users/find/${productRes.data['seller_id']}`);
           //获取关注信息 

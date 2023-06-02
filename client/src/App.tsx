@@ -22,6 +22,7 @@ import Chat from "./pages/Chat"
 import Pay from "./pages/Pay"
 import Orders from "./pages/Orders"
 import { useToast } from "@chakra-ui/react"
+import OrdersDetail from "./components/OrdersDetail"
 
 function App() {
   const navigate = useNavigate()
@@ -89,6 +90,7 @@ function App() {
       <Route path="/chat/:userId" element={<Chat />} />
       <Route path="/pay/:orderId" element={<Pay />} />
       <Route path="/orders" element={<Orders />} />
+      <Route path="/order/:orderId" element={<OrdersDetail />} />
     </Routes>
   )
 }

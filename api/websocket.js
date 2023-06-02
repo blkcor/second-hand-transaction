@@ -23,7 +23,6 @@ io.on("connect", (socket) => {
       userId
     })
   }
-  // console.log(userList)
   //online事件
   socket.emit("online", {
     userList
