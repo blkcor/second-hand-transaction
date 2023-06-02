@@ -13,7 +13,6 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import multer from 'multer'
 import "./websocket.js"
-import { alipaySdk, AlipayFormData } from './pay.cjs'
 
 
 
@@ -39,7 +38,7 @@ app.use((req, res, next) => {
 })
 app.use(express.json())
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: '*',
 }))
 app.use(cookieParser())
 
