@@ -26,3 +26,12 @@ export const getOp = (req, res) => {
   })
 }
 
+export const publishNotification = (req, res) => {
+  const q = "UPDATE notification SET content = ? WHERE id = 1"
+  const {notification} = req.body
+  db.query(q, [notification], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json(result)
+  })
+}
+

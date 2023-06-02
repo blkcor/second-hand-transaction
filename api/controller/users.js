@@ -49,3 +49,13 @@ export const searchUsers = (req, res) => {
     return res.status(200).json(result)
   })
 }
+
+
+export const getAllUsers = (req, res) => {
+  const q = "SELECT * FROM users WHERE role = 1"
+  db.query(q, (err, result) => {
+    if (err) return res.status(500).json(err)
+    if (result.length === 0) return res.status(204).json({ message: 'User not found' })
+    return res.status(200).json(result)
+  })
+}

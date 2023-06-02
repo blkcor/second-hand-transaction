@@ -3,7 +3,8 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import { useCallback, useEffect } from 'react'
 import { useToast } from '@chakra-ui/react'
-
+import User from './pages/User'
+import Product from './pages/Product'
 function App() {
   const location = useLocation().pathname
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/user" element={<User />} />
+      <Route path="/product" element={<Product />} />
     </Routes>
   )
 }
