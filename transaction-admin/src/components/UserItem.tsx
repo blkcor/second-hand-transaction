@@ -56,6 +56,9 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
   }, [user.id])
   return (
     <>
+      {detialVisible && (
+      
+    )}
       <Tr>
         <Td>{user.id}</Td>
         <Td>{user.username}</Td>
