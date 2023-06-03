@@ -103,7 +103,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
     };
 
     fetchData();
-    setAdded(cartState[0]?.productIds?.includes(Number(productId)))
+    setAdded(cartState?.productIds?.includes(Number(productId)))
   }, [productId]);
 
 

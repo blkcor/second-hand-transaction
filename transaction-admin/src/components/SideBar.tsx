@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Heading } from '@chakra-ui/react';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Heading, Image } from '@chakra-ui/react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom'
 type SideBarProps = {
@@ -25,12 +25,32 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
         onClick={() => {
           navigate('/')
         }}
-      >二手交易后台管理</Heading>
+      >
+        <Image
+          src='/ufo.svg'
+          w={6}
+          h={6}
+          display={'inline-block'}
+          position={'relative'}
+          top={1.5}
+          left={-1}
+          transform={'rotate(-90deg)'}
+        />
+        二手交易后台管理</Heading>
       <Accordion defaultIndex={[0]} allowMultiple>
         <AccordionItem>
           <h2>
             <AccordionButton>
               <Box as="span" flex='1' textAlign='left'>
+                <Image
+                  src='/layer.svg'
+                  w={5}
+                  h={5}
+                  display={'inline-block'}
+                  position={'relative'}
+                  top={1}
+                  left={-1}
+                />
                 系统管理
               </Box>
               <AccordionIcon />
@@ -56,7 +76,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-    </Box>
+    </Box >
   )
 }
 export default SideBar;
