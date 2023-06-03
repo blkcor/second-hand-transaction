@@ -72,7 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = () => {
   }, [userId])
   return (
     <Box
-      h-full
+      bg-red-200
       bgImage={"/bgbg.jpeg"}
       bgRepeat={"no-repeat"}
       bgSize={"cover"}
@@ -179,13 +179,15 @@ const UserProfile: React.FC<UserProfileProps> = () => {
               <>
                 <TableContainer min-h-60vh>
                   <Table variant='simple'>
-                    <TableCaption>some collections</TableCaption>
+                    <TableCaption>some products</TableCaption>
                     <Thead>
                       <Tr>
                         <Th>商品名称</Th>
                         <Th>商品图片</Th>
                         <Th>商品分类</Th>
                         <Th>商品价格</Th>
+                        <Th>发布时间</Th>
+                        <Th>状态</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -203,7 +205,7 @@ const UserProfile: React.FC<UserProfileProps> = () => {
         </Flex>
       </Flex >
       <Footer />
-    </Box >
+    </ >
   )
 }
 export default UserProfile;

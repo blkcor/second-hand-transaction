@@ -72,7 +72,19 @@ export const updateOrder = (req, res) => {
   })
 }
 
-export const deleteOrder = (req, res) => { }
+export const deleteOrder = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Invalid token")
+    const orderId = req.params.id
+    const q = `DELETE FROM orders WHERE id = ?`
+    db.query(q, [orderId], (err, result) => {
+      if (err) return res.status(500).json(err)
+      res.status(200).json(result)
+    })
+  })
+}
 
 export const updateStatus = (req, res) => {
   const token = req.cookies.acceptToken

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Order } from '../types/Order';
-import { Box, Button, Flex, Image } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, useToast } from '@chakra-ui/react';
 import axios from '../axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,9 @@ type OrderItemProps = {
 const OrderItem: React.FC<OrderItemProps> = ({ order }) => {
   const [productNum, setProductNum] = useState<number>(0)
   const [productCover, setProductCover] = useState<string>('')
+  const [productInfo, setProductInfo] = useState<any[]>([])
   const navigate = useNavigate()
+  const toast = useToast();
   useEffect(() => {
     const fetchData = async () => {
       //获取商品数量信息
@@ -19,9 +21,62 @@ const OrderItem: React.FC<OrderItemProps> = ({ order }) => {
       const firstProduct = await axios.get(`/products/${productInfo.data[0]}`)
       setProductCover(firstProduct.data.cover)
       setProductNum(productInfo.data.length)
+      setProductInfo(productInfo.data)
     }
     fetchData()
   }, [])
+
+  const cancelOrder = () => {
+    if (confirm("确定取消该订单吗？")) {
+      //1、删除订单
+      axios.delete(`/orders/${order.id}`).then(_ => {
+        toast({
+          position: "top",
+          title: "取消成功",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        })
+        //2、设置商品状态
+        const params = {
+          ids: productInfo,
+          status: 1
+        }
+        axios.put(`/products/updateStatusBatch`, params).then(_ => {
+          setTimeout(() => {
+            window.location.reload()
+          }, 1000);
+        }).catch(err => {
+          console.log(err)
+          toast({
+            position: "top",
+            title: "取消失败",
+            status: "error",
+            duration: 2000,
+            isClosable: true,
+          })
+        })
+
+      }).catch(err => {
+        console.log(err)
+        toast({
+          position: "top",
+          title: "取消失败",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        })
+      })
+    } else {
+      toast({
+        position: "top",
+        title: "取消删除",
+        status: "info",
+        duration: 2000,
+        isClosable: true,
+      })
+    }
+  }
   return (
     <Flex
       gap-4
@@ -91,18 +146,30 @@ const OrderItem: React.FC<OrderItemProps> = ({ order }) => {
           src={`/upload/${productCover}`} />
         {
           order.status === 0 ?
-            <Button
-              bg={"red.500"}
-              color={"#fff"}
-              _hover={{
-                bg: "red.600"
-              }}
-              onClick={() => {
-                navigate(`/pay/${order.id}`)
-              }}
-            >
-              去支付
-            </Button>
+            <Flex gap={3}>
+              <Button
+                bg={"cyan.500"}
+                color={"#fff"}
+                _hover={{
+                  bg: "cyan.600"
+                }}
+                onClick={() => {
+                  navigate(`/pay/${order.id}`)
+                }}
+              >
+                去支付
+              </Button>
+              <Button
+                bg={"red.500"}
+                color={"#fff"}
+                _hover={{
+                  bg: "red.600"
+                }}
+                onClick={cancelOrder}
+              >
+                取消订单
+              </Button>
+            </Flex>
             :
             <Button
               bg={"green.500"}

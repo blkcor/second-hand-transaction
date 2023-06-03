@@ -6,7 +6,7 @@ import {
   getAllProducts, updateProduct,
   getProductsByIds, searchProduct,
   getAllproductsWithoutStatus,
-  takeOffProduct,takeOnProduct
+  takeOffProduct,takeOnProduct,updateStatusBatch
 } from '../controller/products.js'
 const router = express.Router()
 
@@ -22,9 +22,11 @@ router.get('/:id', getDetail)
 
 //修改商品信息
 router.put('/lock', lockProduct)
+router.put("/updateStatusBatch", updateStatusBatch)
 router.put('/:id', updateProduct)
 router.put('/takeOff/:id', takeOffProduct)
 router.put('/takeOn/:id', takeOnProduct)
+
 router.delete('/:id', deleteproduct)
 
 

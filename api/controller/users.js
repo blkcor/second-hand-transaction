@@ -101,3 +101,21 @@ export const adminAddUser = (req, res) => {
     })
   })
 }
+
+
+export const changeUserRole = (req, res) => {
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    const q = "UPDATE users SET `role`=? WHERE id=?";
+    const { role,userId } = req.body;
+    console.log(role,userId)
+    const params = [role,userId];
+    db.query(q, [...params], (err, result) => {
+      if (err) return res.status(500).json(err);
+      if (result.affectedRows > 0) return res.status(200).json({ message: "User role updated" });
+      return res.status(403).json("You can only update the role yourself")
+    })
+  })
+}

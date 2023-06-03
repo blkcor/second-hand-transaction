@@ -187,3 +187,13 @@ export const takeOnProduct = (req, res) => {
     return res.status(200).json({ message: "products taken on" })
   })
 }
+
+
+export const updateStatusBatch = (req, res) => {
+  const { ids, status } = req.body
+  const q = "UPDATE products SET status = ? WHERE id in (?)"
+  db.query(q, [status, ids], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json({ message: "products status updated" })
+  })
+}

@@ -13,8 +13,9 @@ const User: React.FC<UserProps> = () => {
   const [users, setUsers] = React.useState([]);
   const toast = useToast();
   useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
     axios.get('/users/all').then(res => {
-      setUsers(res.data)
+      setUsers(res.data.filter((user: any) => user.id !== currentUser.id))
     })
   }, [])
   const [form, setForm] = React.useState({
