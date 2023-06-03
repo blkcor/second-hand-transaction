@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProfileInput from '../components/ProfileInput';
 import axios from '../axios';
 import moment from 'moment';
-import { Box, Center, Flex, Image, Radio, RadioGroup, Select, Table, TableCaption, TableContainer, Tbody, Textarea, Th, Thead, Tr, color } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Image, Radio, RadioGroup, Select, Table, TableCaption, TableContainer, Tbody, Textarea, Th, Thead, Tr, color } from '@chakra-ui/react';
 import ProductItem from '../components/ProductItem';
 import { Product } from '../types/Product';
 
@@ -29,6 +29,7 @@ type SellerDetail = {
 type CurrentActived = "info" | "products"
 
 const UserProfile: React.FC<UserProfileProps> = () => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState<Product[]>([])
   const [currentItem, setCurrentItem] = useState<CurrentActived>("info")
   const userId = useLocation().pathname.split('/')[2]
@@ -133,7 +134,19 @@ const UserProfile: React.FC<UserProfileProps> = () => {
                     h-full
                     rounded="50%" />
                 </div>
-                <Center mb--8>粉丝数:<span ml-1 fw-800 >{fans?.length}</span></Center>
+                <Center mb--8>
+                  <Box>粉丝数:<span ml-1 fw-800 >{fans?.length}</span></Box>
+                  <Button
+                    ml-6
+                    bg={"green.400"}
+                    _hover={{
+                      bg: "green.500"
+                    }}
+                    onClick={() => {
+                      navigate(`/chat/${userId}`)
+                    }}
+                  >私聊</Button>
+                </Center>
                 <Center>加入时间:<span ml-1 fw-800 text-green-600>{sellerInfo?.joinTime}</span></Center>
                 <ProfileInput disable={true} title='username' id='username' type='text' placeHolder='input your username' value={sellerInfo?.username} />
                 <ProfileInput disable={true} title='email' id='email' type='email' placeHolder='input your email' value={sellerInfo?.email} />
@@ -205,7 +218,7 @@ const UserProfile: React.FC<UserProfileProps> = () => {
         </Flex>
       </Flex >
       <Footer />
-    </ >
+    </Box>
   )
 }
 export default UserProfile;
