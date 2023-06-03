@@ -2,6 +2,8 @@ import '../config/db.js'
 import { db } from '../config/db.js'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
+import bcrypt from 'bcrypt'
+
 export const getUser = (req, res) => {
   const q = "SELECT * FROM users WHERE id = ?"
   db.query(q, [req.params.userId], (err, result) => {
@@ -52,12 +54,17 @@ export const searchUsers = (req, res) => {
 
 
 export const getAllUsers = (req, res) => {
-  const q = "SELECT * FROM users WHERE role = 1"
-  db.query(q, (err, result) => {
-    if (err) return res.status(500).json(err)
-    if (result.length === 0) return res.status(204).json({ message: 'User not found' })
-    return res.status(200).json(result)
+  const q = "SELECT * FROM users"
+  const token = req.cookies.acceptToken
+  if (!token) return res.status(401).json('Not logged in!')
+  jwt.verify(token, "CHY", (err, userInfo) => {
+    db.query(q, (err, result) => {
+      if (err) return res.status(500).json(err)
+      if (result.length === 0) return res.status(204).json({ message: 'User not found' })
+      return res.status(200).json(result.filter(user=>user.id !== userInfo.id))
+    })
   })
+  
 }
 
 
@@ -71,6 +78,26 @@ export const deleteUser = (req, res) => {
       if (err) return res.status(500).json(err)
       if (result.affectedRows > 0) return res.status(200).json({ message: 'User deleted' })
       return res.status(403).json("You can only delete yourself")
+    })
+  })
+}
+
+
+export const adminAddUser = (req, res) => {
+  const q = 'SELECT * FROM users WHERE username = ?'
+  db.query(q, [req.body.username], (err, result) => {
+    if (err) return res.status(500).json(err)
+    if (result.length > 0) return res.status(409).json({ message: 'Username already exists' })
+    const q = 'INSERT INTO users(username,password,email,phone,role) VALUES (?)'
+    const { username, email, phone, password,role } = req.body
+    //hash the password and save in the database
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(password, salt)
+    const params = [username, hashedPassword, email, phone,role]
+    db.query(q, [params], (err, result) => {
+      console.log(err)
+      if (err) return res.status(500).json(err)
+      return res.status(200).json({ message: 'User created' })
     })
   })
 }

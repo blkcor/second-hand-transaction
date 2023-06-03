@@ -61,7 +61,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
             duration: 3000,
             isClosable: true,
           })
-          navigate('/')
+          navigate('/products')
         } else {
           toast({
             position: "top",
@@ -70,6 +70,7 @@ const EditProduct: React.FC<EditProductProps> = () => {
             duration: 3000,
             isClosable: true,
           })
+          return
         }
       }
       handleSave()

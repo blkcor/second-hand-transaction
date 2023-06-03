@@ -1,4 +1,4 @@
-import { Flex, Box, Td, Tr, Image, useToast } from '@chakra-ui/react';
+import { Flex, Td, Tr, Image, useToast, Button } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import axios from '../axios';
 
@@ -8,7 +8,6 @@ type UserItemProps = {
 
 const UserItem: React.FC<UserItemProps> = ({ user }) => {
   const toast = useToast();
-  const [detialVisible, setDetialVisible] = React.useState(false);
   const [productNum, setProductNum] = React.useState(0);
   const handleDeleteUser = () => {
     if (confirm("确定删除该用户吗？")) {
@@ -46,9 +45,7 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
 
   }
 
-  const handleUserDetail = () => {
 
-  }
   useEffect(() => {
     axios.get("/products/getByUserId/" + user.id).then(res => {
       setProductNum(res.data.length)
@@ -56,9 +53,6 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
   }, [user.id])
   return (
     <>
-      {detialVisible && (
-      
-    )}
       <Tr>
         <Td>{user.id}</Td>
         <Td>{user.username}</Td>
@@ -72,19 +66,22 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
         </Td>
         <Td>{user.email}</Td>
         <Td>{productNum}</Td>
+        <Td>{user.role === 1 ? <span>普通用户</span> : <span style={{
+          color: "red"
+        }}>管理员</span>}</Td>
         <Td>
           <Flex gap={6}>
-            <Box
+            <Button
               bg={"#4cd31d"}
               color={'white'}
               p={2}
               borderRadius={5}
               cursor={'pointer'}
-              onClick={handleUserDetail}
+              onClick={() => { }}
             >
               查看
-            </Box>
-            <Box
+            </Button>
+            <Button
               bg={"#d31d27"}
               color={'white'}
               p={2}
@@ -93,7 +90,7 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
               onClick={handleDeleteUser}
             >
               删除
-            </Box>
+            </Button>
           </Flex>
 
         </Td>

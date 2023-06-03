@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import SideBar from '../components/SideBar';
 import Main from '../components/Main';
-import { Button, Flex, Table, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
+import { Flex, Table, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
 import axios from '../axios';
 import ProductItem from '../components/ProductItem';
 
@@ -32,15 +32,6 @@ const Product: React.FC<ProductProps> = () => {
             gap={10}
             p={10}
           >
-            <Button
-              bg={"#3d80f7"}
-              color={'white'}
-              position={'relative'}
-              right={'47%'}
-              top={'-2%'}
-            >
-              新增商品
-            </Button>
 
             <Flex
               top={'15%'}

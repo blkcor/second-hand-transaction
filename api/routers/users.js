@@ -1,7 +1,8 @@
 import express from 'express'
-import { getUser, updateUser, getUsers, searchUsers,getAllUsers,deleteUser } from '../controller/users.js'
+import { getUser, updateUser, getUsers, searchUsers,getAllUsers,deleteUser,adminAddUser } from '../controller/users.js'
 const router = express.Router()
 
+router.post("/adminAdd",adminAddUser)
 router.get('/find/:userId', getUser)
 router.put('/', updateUser)
 router.get('/find', getUsers)

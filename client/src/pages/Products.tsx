@@ -60,6 +60,8 @@ const Products: React.FC<ProductsProps> = () => {
                 <Th>商品图片</Th>
                 <Th>商品分类</Th>
                 <Th>商品价格</Th>
+                <Th>发布时间</Th>
+                <Th>商品状态</Th>
                 <Th>操作</Th>
               </Tr>
             </Thead>

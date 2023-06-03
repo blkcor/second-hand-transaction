@@ -1,4 +1,4 @@
-import { Tr, Td, Box, Image, Button } from '@chakra-ui/react';
+import { Tr, Td, Box, Image, Button, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { productTagMap, productTagColorMap, mapEngTagToChn, Product } from '../types/Product';
@@ -14,6 +14,7 @@ type CollectionItemProps = {
 const ProductItem: React.FC<CollectionItemProps> = ({ product, userProfile }) => {
   const [sellerInfo, setSellerInfo] = useState<Seller>()
   useEffect(() => {
+
     const handleFetch = async () => {
       const userInfo = await axios.get(`/users/find/${product.sellerId}`)
       setSellerInfo({
@@ -51,18 +52,55 @@ const ProductItem: React.FC<CollectionItemProps> = ({ product, userProfile }) =>
           </Link>
         }</Td>
         <Td>{product.price}</Td>
+        <Td>{product.publishTime}</Td>
+        <Td>{product.status === 1 ? <span style={{
+          padding: "8px",
+          background: "#4cd31d",
+          color: "#fff",
+          borderRadius: "5px"
+        }}>在售</span> : product.status === 0 ?
+          <span
+            style={{
+              padding: "8px",
+              background: "#d31d27",
+              color: "#fff",
+              borderRadius: "5px"
+            }}>
+            售出
+          </span>
+          : <span
+            style={{
+              padding: "8px",
+              background: "rgba(250, 204, 21)",
+              color: "#fff",
+              borderRadius: "5px"
+            }}>
+            <Tooltip
+              label="请联系管理员!"
+              aria-label='A tooltip'
+              _hover={{
+                cursor: "pointer"
+              }}
+            >
+              下架
+            </Tooltip>
+          </span>
+        }</Td>
 
         {
           !userProfile &&
           <Td>
-            <Button
-              bg={"green.400"}
-              _hover={{
-                bg: "green.600"
-              }}
-              onClick={handleEdit}
-              mr-2
-            >编辑</Button>
+            {
+              product.status !== 0 &&
+              <Button
+                bg={"green.400"}
+                _hover={{
+                  bg: "green.600"
+                }}
+                onClick={handleEdit}
+                mr-2
+              >编辑</Button>
+            }
             <Button
               bg={"red.400"}
               _hover={{

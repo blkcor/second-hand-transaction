@@ -113,7 +113,7 @@ export const getAllProducts = (req, res) => {
   if (!token) return res.status(401).json('Not logged in!')
   jwt.verify(token, "CHY", (err, userInfo) => {
     if (err) return res.status(403).json("Invalid token")
-    const q = "SELECT * FROM products WHERE seller_id = ? AND status = 1"
+    const q = "SELECT * FROM products WHERE seller_id = ?"
     db.query(q, [userInfo.id], (err, result) => {
       if (err) return res.status(500).json(err)
       return res.status(200).json(result)
@@ -167,5 +167,23 @@ export const lockProduct = (req, res) => {
   db.query(q, [ids], (err, result) => {
     if (err) return res.status(500).json(err)
     return res.status(200).json({ message: "products locked" })
+  })
+}
+
+export const takeOffProduct = (req, res) => {
+  const id = req.params.id
+  const q = "UPDATE products SET status = 2 WHERE id = ?"
+  db.query(q, [id], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json({ message: "products taken off" })
+  })
+}
+
+export const takeOnProduct = (req, res) => {
+  const id = req.params.id
+  const q = "UPDATE products SET status = 1 WHERE id = ?"
+  db.query(q, [id], (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json({ message: "products taken on" })
   })
 }

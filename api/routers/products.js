@@ -5,7 +5,8 @@ import {
   getByUserId, deleteproduct,
   getAllProducts, updateProduct,
   getProductsByIds, searchProduct,
-  getAllproductsWithoutStatus
+  getAllproductsWithoutStatus,
+  takeOffProduct,takeOnProduct
 } from '../controller/products.js'
 const router = express.Router()
 
@@ -22,7 +23,8 @@ router.get('/:id', getDetail)
 //修改商品信息
 router.put('/lock', lockProduct)
 router.put('/:id', updateProduct)
-
+router.put('/takeOff/:id', takeOffProduct)
+router.put('/takeOn/:id', takeOnProduct)
 router.delete('/:id', deleteproduct)
 
 
