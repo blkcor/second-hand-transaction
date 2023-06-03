@@ -86,6 +86,7 @@ const Shoppings: React.FC<ShoppingsProps> = () => {
         productId
       ]
     })
+
     await axios.post("/op", params)
 
     const result = cartState?.productIds?.filter((productId: number) => {

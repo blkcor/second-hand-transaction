@@ -78,7 +78,8 @@ const Pay: React.FC<PayProps> = () => {
       price: order?.price as number,
       status: order?.status as number,
       createTime: order?.createTime as string,
-      address: e.target.value
+      address: e.target.value,
+      userId: 1
     })
   }
   const handleSetAddress = async () => {
@@ -213,7 +214,7 @@ const Pay: React.FC<PayProps> = () => {
             <Input type='text'
               border={"2px solid #000"}
               placeholder='请填写收货地址'
-              value={order?.address}
+              value={order?.address || ""}
               onChange={handleAddressChange}
             />
             <Button

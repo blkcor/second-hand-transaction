@@ -36,14 +36,14 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
   const [comments, setComments] = useState<Comment[]>()
   const navigate = useNavigate()
   //购物车信息
-  const cartState = useRecoilState(cartAtom);
+
 
   const toast = useToast();
   function updateCart(newCart: cartState) {
     setCartState(newCart);
   }
 
-  const setCartState = useSetRecoilState(cartAtom);
+  const [cartState, setCartState] = useRecoilState(cartAtom)
   useEffect(() => {
     const fetchData = async () => {
       if (productId) {
@@ -200,6 +200,46 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
 
     }
   }
+
+  const handleBuy = async () => {
+    //1、创建订单 入库 
+    const order = {
+      id: 0,
+      userId: 1,
+      price: productInfo?.price,
+      status: 0,
+      createTime: moment().format("YYYY-MM-DD"),
+    }
+    const orderInfo = await axios.post("/orders", order)
+    //2、将商品订单对应关系入库
+    const params = [
+      [
+        orderInfo.data.insertId,
+        Number(productId)
+      ]
+    ]
+    await axios.post("/op", params)
+
+    const result = cartState?.productIds?.filter((cartProductId: number) => {
+      return cartProductId !== Number(productId)
+    })
+    setCartState({
+      productIds: result,
+    })
+    localStorage.setItem("carts", JSON.stringify({
+      productIds: result,
+    }))
+
+    const params2 = {
+      ids: [productId]
+    }
+    //设置支付商品的状态为0（锁定）
+    axios.put("/products/lock", params2)
+    //从数据库删除购物车中的商品
+    axios.delete("/carts/carts/removeBatch/", { params: params2 })
+    navigate(`/pay/${orderInfo.data.insertId}`)
+  }
+
   return (
     <>
       <Header />
@@ -390,6 +430,7 @@ const ProductDetail: React.FC<ProductDetailProps> = () => {
                 _hover={{
                   bg: "rgba(22, 163, 74,0.8)"
                 }}
+                onClick={handleBuy}
               ><i mr-2 i-carbon-money />购买</Button>
             </Flex>
           </Flex>

@@ -35,3 +35,11 @@ export const publishNotification = (req, res) => {
   })
 }
 
+export const getNotification = (req, res) => {
+  const q = "SELECT * FROM notification WHERE id = 1"
+  db.query(q, (err, result) => {
+    if (err) return res.status(500).json(err)
+    return res.status(200).json(result[0])
+  })
+}
+

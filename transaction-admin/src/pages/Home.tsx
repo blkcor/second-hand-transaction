@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBar from '../components/SideBar';
 import Main from '../components/Main';
 import { Button, Flex, Heading, Input, useToast } from '@chakra-ui/react';
@@ -12,6 +12,12 @@ type HomeProps = {
 const Home: React.FC<HomeProps> = () => {
   const [notification, setNotification] = useState<string>('');
   const toast = useToast()
+  useEffect(() => {
+    axios.get("/op/notification/get")
+      .then(res => {
+        setNotification(res.data.content)
+      })
+  }, [])
   const handlePublisNotification = () => {
     axios.put("/op/notification", {
       notification

@@ -19,6 +19,12 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
       <Heading
         fontSize={"0.8xl"}
         mb={4}
+        _hover={{
+          cursor: 'pointer'
+        }}
+        onClick={() => {
+          navigate('/')
+        }}
       >二手交易后台管理</Heading>
       <Accordion defaultIndex={[0]} allowMultiple>
         <AccordionItem>
