@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import axios from '../axios';
 import { Order } from '../types/Order';
 import moment from 'moment';
@@ -49,11 +49,11 @@ const Orders: React.FC<OrdersProps> = () => {
         min-h-60vh
       >
         {
-          orders && orders.map((order: Order) => {
+          orders && orders.length > 0 ? orders.map((order: Order) => {
             return (
               <OrderItem key={order.id} order={order} />
             )
-          })
+          }) : <Heading>暂无订单</Heading>
         }
       </Flex>
 

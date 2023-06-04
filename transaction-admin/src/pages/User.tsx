@@ -158,6 +158,7 @@ const User: React.FC<UserProps> = () => {
                       <Th>用户头像</Th>
                       <Th>用户邮箱</Th>
                       <Th>发布商品数量</Th>
+                      <Th>用户角色</Th>
                       <Th>操作</Th>
                     </Tr>
                   </Thead>

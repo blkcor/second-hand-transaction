@@ -151,7 +151,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
       <Td>
         <Flex gap={6}>
           {
-            product.status === 1 || product.status === 0 ?
+            product.status === 1 ?
               <Button
                 bg={"cyan.500"}
                 _hover={{ bg: "cyan.600" }}
@@ -163,18 +163,18 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
               >
                 下架
               </Button>
-              :
-              <Button
-                bg={"green.500"}
-                _hover={{ bg: "green.600" }}
-                color={'white'}
-                p={2}
-                borderRadius={5}
-                cursor={'pointer'}
-                onClick={handleTakeOn}
-              >
-                上架
-              </Button>
+              : product.status === 0 ? null :
+                <Button
+                  bg={"green.500"}
+                  _hover={{ bg: "green.600" }}
+                  color={'white'}
+                  p={2}
+                  borderRadius={5}
+                  cursor={'pointer'}
+                  onClick={handleTakeOn}
+                >
+                  上架
+                </Button>
           }
           <Button
             bg={"#d31d27"}
